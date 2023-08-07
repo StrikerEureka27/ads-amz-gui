@@ -4,7 +4,6 @@ import LoadFile from '@/components/LoadFile.vue';
 import { useFileStore } from '@/stores/adsfile';
 import { useLogStore } from '@/stores/adslog';
 
-
 const fileStore = useFileStore();
 const logStore = useLogStore();
 
@@ -52,8 +51,6 @@ const dowloadFile = async (id: number): Promise<void> => {
 
         let href = URL.createObjectURL(await response.blob());
         newHref.value = href;
-        console.log(href)
-        console.log(newHref.value);
 
         for (let i = 1; i <= 100; i++) {
             load.value += 1;
@@ -63,89 +60,87 @@ const dowloadFile = async (id: number): Promise<void> => {
             load.value = 0;
             fileStore.getFiles();
         }, 1000)
-
-        console.log(response);
     } catch (e) {
         console.error(e);
     }
-}
+};
 
 </script>
 <template>
-    <v-container class="d-flex justify-center align-center" fluid>
-        <v-row class="d-flex justify-center flex-nowrap pa-4">
-            <v-col class="flex-grow-1 flex-shrink-0" md="2">
-                <v-card>
-                    <v-card-title class="text-subtitle-1">
-                        Account
-                    </v-card-title>
-                    <v-container class="d-flex flex-column">
-                        <load-file></load-file>
-                        <v-btn class="ma-1" size="x-small" color="secondary" block>Parameters</v-btn>
-                        <v-btn class="ma-1" size="x-small" color="secondary" block>Filters</v-btn>
-                    </v-container>
-                </v-card>
-            </v-col>
-            <v-col class="flex-grow-1" md="auto">
-                <v-card>
-                    <v-card-title class="text-subtitle-1">
-                        Repository
-                    </v-card-title>
-                    <v-container class="d-flex flex-wrap">
-                        <v-list class="flex-grow-1 ma-1 pa-0" density="compact">
-                            <v-list-item>
-                                <v-list-subheader>PROGRESS</v-list-subheader>
-                                <v-progress-circular :rotate="360" :size="100" :width="15" :model-value="load"
-                                    color="secondary">
-                                    {{ load }}
-                                </v-progress-circular>
-                            </v-list-item>
-                        </v-list>
-                        <v-list class="flex-grow-1 ma-1 pa-0" density="compact">
-                            <v-list-subheader>READY TO PROCESS</v-list-subheader>
-                            <v-list-item v-for="f in fileStore.getNotProcessedFiles()" :key="f.id" :value="f">
-                                <template v-slot:prepend>
-                                    <v-icon icon="mdi-file"></v-icon>
-                                </template>
-                                <v-list-item-title>{{ f.id + " - " + f.name }}</v-list-item-title>
-                                <v-list-item-subtitle>{{ f.createdAt }}</v-list-item-subtitle>
-                                <template v-slot:append>
-                                    <v-btn icon="mdi-arrow-right-thick" size="x-small" color="secondary"
-                                        @click="uploadStep(f.id)"></v-btn>
-                                </template>
-                            </v-list-item>
-                        </v-list>
-                        <v-list class="flex-grow-1 ma-1 pa-0" density="compact">
-                            <v-list-subheader>PROCESSED</v-list-subheader>
-                            <v-list-item min-width="300" v-for="f in fileStore.getProcessedFiles()" :key="f.id" :value="f">
-                                <template v-slot:prepend>
-                                    <v-icon icon="mdi-file"></v-icon>
-                                </template>
-                                <v-list-item-title>{{ f.id + " - " + f.name }}</v-list-item-title>
-                                <v-list-item-subtitle>{{ f.createdAt }}</v-list-item-subtitle>
-                                <v-list-item-subtitle>{{ f.processed ? 'Ready for download' : 'not ready'
-                                }}</v-list-item-subtitle>
-                                <template v-slot:append>
-                                    <v-btn :href="newHref" icon="mdi-download" size="x-small" color="secondary"
-                                        @click="dowloadFile(f.id)" :download="f.name"></v-btn>
-                                </template>
-                            </v-list-item>
-                        </v-list>
-                    </v-container>
-                </v-card>
-            </v-col>
-            <v-col class="flex-grow-1 flex-shrink-1" md="auto">
-                <v-card>
-                    <v-card-title class="text-subtitle-1">History</v-card-title>
-                    <v-list>
-                        <v-list-item v-for="log in logStore.logs" :key="log.id">
-                            <v-list-item-title v-text="log.message"></v-list-item-title>
-                            <v-list-item-subtitle>{{ log.createdAt }}</v-list-item-subtitle>
-                        </v-list-item>
-                    </v-list>
-                </v-card>
-            </v-col>
-        </v-row>
+    <v-container class="d-flex justify-center">
+        <v-card class="ma-1" min-width="250">
+            <v-card-title>
+                Actions
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>Select a option</v-card-text>
+            <v-card-action class="d-flex flex-column ma-0 pa-1">
+                <load-file></load-file>
+                <v-btn class="mt-2" size="x-small" color="secondary" variant="tonal" disabled block>Parameters</v-btn>
+                <v-btn class="mt-2" size="x-small" color="secondary" variant="tonal" disabled block>Filters</v-btn>
+                <v-btn class="mt-2" size="x-small" color="red" variant="tonal" href="/LogIn" block>Logout</v-btn>
+            </v-card-action>
+        </v-card>
+        <v-card class="ma-1" min-width="1000">
+            <v-card-title>
+                Repository
+            </v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>Manage and visualize current workflow</v-card-text>
+            <v-container>
+                <v-list class="pa-0">
+                    <v-list-subheader>PROGRESS</v-list-subheader>
+                    <v-list-item>
+                        <v-progress-circular :rotate="360" :size="100" :width="15" :model-value="load" color="secondary">
+                            {{ load }}
+                        </v-progress-circular>
+                    </v-list-item>
+                </v-list>
+                <v-divider class="mt-2"></v-divider>
+                <v-list>
+                    <v-list-subheader>READY TO PROCESS</v-list-subheader>
+                    <v-list-item v-for="f in fileStore.getNotProcessedFiles()" :key="f.id" :value="f">
+                        <template v-slot:prepend>
+                            <v-icon icon="mdi-file"></v-icon>
+                        </template>
+                        <v-list-item-title>{{ f.id + " : " + f.name }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ f.createdAt.split("T")[0] + " " + f.createdAt.split("T")[1].substring(0,5) }}</v-list-item-subtitle>
+                        <template v-slot:append>
+                            <v-btn icon="mdi-arrow-right-thick" size="x-small" color="secondary"
+                                @click="uploadStep(f.id)"></v-btn>
+                        </template>
+                    </v-list-item>
+                </v-list>
+                <v-divider></v-divider>
+                <v-list>
+                    <v-list-subheader>PROCESSED</v-list-subheader>
+                    <v-list-item min-width="300" v-for="f in fileStore.getProcessedFiles()" :key="f.id" :value="f">
+                        <template v-slot:prepend>
+                            <v-icon icon="mdi-file-document-check"></v-icon>
+                        </template>
+                        <v-list-item-title>{{ f.id + " : " + f.name }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ f.createdAt.split("T")[0] + " " + f.createdAt.split("T")[1].substring(0,5) }}</v-list-item-subtitle>
+                        <v-list-item-subtitle>{{ f.processed ? 'Ready for download' : 'Not ready'
+                        }}</v-list-item-subtitle>
+                        <template v-slot:append>
+                            <v-btn :href="newHref" icon="mdi-download" size="x-small" color="secondary"
+                                @click="dowloadFile(f.id)" :download="f.name"></v-btn>
+                        </template>
+                    </v-list-item>
+                </v-list>
+            </v-container>
+        </v-card>
+        <v-card class="ma-1">
+            <v-card-title>History</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>View history operations</v-card-text>
+            <v-list>
+                <v-list-item v-for="log in logStore.logs" :key="log.id">
+                    <v-list-item-title v-text="log.message"></v-list-item-title>
+                    <v-list-item-subtitle>{{ log.createdAt.split("T")[0] + " " + log.createdAt.split("T")[1].substring(0,5) }}</v-list-item-subtitle>
+                </v-list-item>
+            </v-list>
+        </v-card>
     </v-container>
 </template>
 <style>

@@ -29,7 +29,7 @@ const uploadFile = async (): Promise<void> => {
 </script>
 <template>
     <div class="text-center">
-        <v-btn class="ma-1" size="x-small" color="secondary" @click="dialog = true" block>
+        <v-btn class="mt-2" size="x-small" color="secondary" variant="tonal" @click="dialog = true" block>
             load file
         </v-btn>
         <v-dialog v-model="dialog" width="auto">
@@ -37,6 +37,7 @@ const uploadFile = async (): Promise<void> => {
                 <v-card-title>
                     Upload file
                 </v-card-title>
+                <v-divider></v-divider>
                 <v-card-item>
                     <v-file-input v-model="file" class="btn-file" label="Select or drop your file!" density="compact"
                         clearable></v-file-input>
