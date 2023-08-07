@@ -27,5 +27,13 @@ export const useFileStore = defineStore('file', () => {
         return files.value.filter((e)=> e.processed == false);
     }
 
-    return { files, getFiles, getProcessedFiles, getNotProcessedFiles }
+    const getTotalFiles = (): number =>{
+        return files.value.length;
+    }
+
+    const getStorage = (): number =>{
+        return files.value.length * 2;
+    }
+
+    return { files, getFiles, getProcessedFiles, getNotProcessedFiles, getTotalFiles, getStorage }
 })

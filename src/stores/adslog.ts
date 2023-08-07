@@ -19,5 +19,10 @@ export const useLogStore = defineStore('log', () => {
 
     };
 
-    return { logs, getLogs }
+    const sortAndFilterLogs = (): ILog[] => {
+        return logs.value.sort((a, b) => a.id - b.id).reverse().filter((e, i) => { if (i <= 7) { return e } });
+    }
+
+
+    return { logs, getLogs, sortAndFilterLogs }
 });
