@@ -19,19 +19,19 @@ export const useFileStore = defineStore('file', () => {
         }
 
     };
-    const getProcessedFiles = (): IFile[] =>{
-        return files.value.filter((e)=> e.processed == true);
+    const getProcessedFiles = (): IFile[] => {
+        return files.value.filter((e) => e.processed == true);
     }
 
-    const getNotProcessedFiles = (): IFile[] =>{
-        return files.value.filter((e)=> e.processed == false);
+    const getNotProcessedFiles = (): IFile[] => {
+        return files.value.filter((e) => e.processed == false);
     }
 
-    const getTotalFiles = (): number =>{
+    const getTotalFiles = (): number => {
         return files.value.length;
     }
 
-    const getStorage = (): number =>{
+    const getStorage = (): number => {
         return files.value.length * 2;
     }
 
