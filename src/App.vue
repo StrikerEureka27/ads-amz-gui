@@ -3,6 +3,7 @@
 import NavigationBar from '@/components/NavigationBar.vue';
 import FotterBar from '@/components/FotterBar.vue';
 
+
 </script>
 
 <template>

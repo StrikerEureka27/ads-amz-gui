@@ -30,7 +30,7 @@ const parseDate = (createdAt: Date): string => {
 
 const uploadStep = async (id: number): Promise<void> => {
     try {
-        await fetch(`http://localhost:8080/adsamz/step/${id}`, {
+        await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/step/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ const uploadStep = async (id: number): Promise<void> => {
 
 const dowloadFile = async (id: number): Promise<void> => {
     try {
-        const response = await fetch(`http://localhost:8080/adsamz/download/${id}`, {
+        const response = await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/download/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -65,7 +65,7 @@ const dowloadFile = async (id: number): Promise<void> => {
 
 const deleteFile = async (id: number): Promise<void> => {
     try {
-        await fetch(`http://localhost:8080/adsamz/delete/${id}`, {
+        await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/delete/${id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -6,7 +6,7 @@ export const useFileStore = defineStore('file', () => {
     const files = ref<IFile[]>([]);
     const getFiles = async (): Promise<IFile[] | undefined> => {
         try {
-            const res = await fetch(`http://localhost:8080/adsamz/all`, {
+            const res = await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/all`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'

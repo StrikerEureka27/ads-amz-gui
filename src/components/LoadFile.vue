@@ -11,7 +11,7 @@ const uploadFile = async (): Promise<void> => {
     uploadData.append("file", file.value[0]);
     uploadData.append("processed", "false");
     try {
-        await fetch(`http://localhost:8080/adsamz/upload`, {
+        await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/upload`, {
             method: 'POST',
             body: uploadData
         });

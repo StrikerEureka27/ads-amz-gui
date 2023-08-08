@@ -4,15 +4,16 @@ import type { ILog } from '@/data/log.model'
 
 export const useLogStore = defineStore('log', () => {
     const logs = ref<ILog[]>([]);
-    const getLogs = async (): Promise<void | undefined> => {
+    const getLogs = async (): Promise<ILog[] | undefined> => {
         try {
-            const response = await fetch(`http://localhost:8080/adsamz/log/all`, {
+            const response = await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/log/all`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
             logs.value = await response.json();
+            return logs.value;
         } catch (e) {
             console.error(e);
         }
@@ -20,8 +21,8 @@ export const useLogStore = defineStore('log', () => {
     };
 
     const sortAndFilterLogs = (): ILog[] => {
-        return logs.value.sort((a, b) => a.id - b.id).reverse().filter((e, i) => { if (i <= 7) { return e } });
-    }
+     return logs.value.filter((e, i) => { if (i <= 7) { return e } }).sort((a, b) => a.id - b.id).reverse();
+     }
 
     return { logs, getLogs, sortAndFilterLogs }
 });
