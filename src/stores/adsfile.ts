@@ -1,12 +1,14 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { IFile } from '@/data/file.model'
+import { useLogStore } from '@/stores/adslog';
 
 export const useFileStore = defineStore('file', () => {
     const files = ref<IFile[]>([]);
     const isLoading = ref<boolean>(false);
     const load = ref<number>(0);
     const processed = ref<boolean | undefined>(false);
+    const logStore = useLogStore();
     async function getFiles(): Promise<void> {
         try {
             const res = await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/all`, {
@@ -53,6 +55,7 @@ export const useFileStore = defineStore('file', () => {
                 if (index == 3) {
                     clearInterval(refreshIntervalId);
                     getFiles();
+                    logStore.getLogs();
                     load.value = 0;
                 }
             }, 1000);
@@ -76,6 +79,7 @@ export const useFileStore = defineStore('file', () => {
                 isLoading.value = false;
             }, 1500);
             getFiles();
+            logStore.getLogs();
         } catch (e) {
             isLoading.value = false;
             console.error(e);

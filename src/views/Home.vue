@@ -85,11 +85,11 @@ const changeAlertColor = (message: string = 'error'): string => {
                         <v-list-item-title> <v-chip variant="tonal" size="x-small">{{ f.id }}</v-chip> {{ f.name
                         }}</v-list-item-title>
                         <v-list-item-subtitle> {{ parseDate(f.createdAt) }} </v-list-item-subtitle>
-                        <v-list-item-subtitle> {{ f.step==0 ? 'Ready to process' : 'Not ready to process' }} </v-list-item-subtitle>
+                        <v-list-item-subtitle> {{ f.step==0 ? 'Ready to process' : 'Not ready to process or refresh repository' }} </v-list-item-subtitle>
                         <template v-slot:append>
                             <v-btn class="mr-2" icon="mdi-delete" size="small" variant="tonal" color="error"
                                 @click="fileStore.deleteFile(f.id)"></v-btn>
-                            <v-btn icon="mdi-arrow-right-thick" size="small" variant="tonal" color="info"
+                            <v-btn icon="mdi-arrow-right-thick" size="small" variant="tonal" :disabled="fileStore.load == 0 ? false : true" color="info"
                                 @click="fileStore.uploadStep(f.id)"></v-btn>
                         </template>
                     </v-list-item>

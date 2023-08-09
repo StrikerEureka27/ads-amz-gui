@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useFileStore } from '@/stores/adsfile';
+import { useLogStore } from '@/stores/adslog';
 
 const file = ref<File | null>(null);
 const dialog = ref<boolean>(false);
 const fileStore = useFileStore();
+const logStore = useLogStore();
 
 const uploadFile = async (): Promise<void> => {
     const uploadData = new FormData();
@@ -20,6 +22,7 @@ const uploadFile = async (): Promise<void> => {
             fileStore.isLoading = false;
         }, 1500);
         fileStore.getFiles();
+        logStore.getLogs();
         dialog.value = false;
         file.value = null;
     } catch (e) {
