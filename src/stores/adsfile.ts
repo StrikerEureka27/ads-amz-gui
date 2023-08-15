@@ -11,7 +11,7 @@ export const useFileStore = defineStore('file', () => {
     const logStore = useLogStore();
     async function getFiles(): Promise<void> {
         try {
-            const res = await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/all`, {
+            const res = await fetch(`http://${import.meta.env.VITE_AMZ_API}/all`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -26,7 +26,7 @@ export const useFileStore = defineStore('file', () => {
 
     async function isProcessed(id: number): Promise<boolean | undefined> {
         try {
-            const res = await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/processed/${id}`, {
+            const res = await fetch(`http://${import.meta.env.VITE_AMZ_API}/processed/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -42,7 +42,7 @@ export const useFileStore = defineStore('file', () => {
     const uploadStep = async (id: number): Promise<void> => {
         try {
             load.value = 25;
-            await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/step/${id}`, {
+            await fetch(`http://${import.meta.env.VITE_AMZ_API}/step/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -69,7 +69,7 @@ export const useFileStore = defineStore('file', () => {
     async function deleteFile(id: number): Promise<void> {
         try {
             isLoading.value = true;
-            await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/delete/${id}`, {
+            await fetch(`http://${import.meta.env.VITE_AMZ_API}/delete/${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ export const useFileStore = defineStore('file', () => {
 
     async function downloadFile(id: number): Promise<string | undefined> {
         try {
-            const response = await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/download/${id}`, {
+            const response = await fetch(`http://${import.meta.env.VITE_AMZ_API}/download/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'

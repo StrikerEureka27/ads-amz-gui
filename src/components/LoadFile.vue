@@ -14,7 +14,7 @@ const uploadFile = async (): Promise<void> => {
     uploadData.append("processed", "false");
     try {
         fileStore.isLoading = true;
-        await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/upload`, {
+        await fetch(`http://${import.meta.env.VITE_AMZ_API}/upload`, {
             method: 'POST',
             body: uploadData
         });

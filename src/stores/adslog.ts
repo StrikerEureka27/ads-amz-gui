@@ -6,7 +6,7 @@ export const useLogStore = defineStore('log', () => {
     const logs = ref<ILog[]>([]);
     async function getLogs(): Promise<void> {
         try {
-            const response = await fetch(`http://${import.meta.env.VITE_AMZ_API}/adsamz/log/all`, {
+            const response = await fetch(`http://${import.meta.env.VITE_AMZ_API}/log/all`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
