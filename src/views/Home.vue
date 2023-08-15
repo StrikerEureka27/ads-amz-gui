@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import LoadFile from '@/components/LoadFile.vue';
 import { useFileStore } from '@/stores/adsfile';
 import { useLogStore } from '@/stores/adslog';
+import { useAuth0 } from '@auth0/auth0-vue';
 
 const fileStore = useFileStore();
 const logStore = useLogStore();
@@ -17,6 +18,10 @@ const reloadStores = () => {
     logStore.getLogs();
 };
 
+const logOut = ():void =>{
+    const { logout } = useAuth0();
+    logout({ logoutParams: { returnTo: window.location.origin } });
+}
 
 const parseDate = (createdAt: Date): string => {
     return createdAt.toString().split("T")[0] + " " + createdAt.toString().split("T")[1].substring(0, 5);
@@ -41,7 +46,7 @@ const changeAlertColor = (message: string = 'error'): string => {
                     block>Accounts</v-btn>
                 <v-btn class="mt-2 ma-0" size="x-small" color="secondary" variant="tonal" disabled block>Filters</v-btn>
                 <v-btn class="mt-2 ma-0" size="x-small" color="secondary" variant="tonal" disabled block>Parameters</v-btn>
-                <v-btn class="mt-2 ma-0" size="x-small" color="red" variant="tonal" href="/LogIn" block>Logout</v-btn>
+                <v-btn class="mt-2 ma-0" size="x-small" color="red" variant="tonal" @click="logOut()" block>Logout</v-btn>
             </v-card-actions>
         </v-card>
         <v-card class="flex-fill ma-1">
