@@ -7,6 +7,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
 
 const fileStore = useFileStore();
 const logStore = useLogStore();
+const { logout } = useAuth0();
 
 onMounted(() => {
     fileStore.getFiles();
@@ -19,7 +20,6 @@ const reloadStores = () => {
 };
 
 const logOut = ():void =>{
-    const { logout } = useAuth0();
     logout({ logoutParams: { returnTo: window.location.origin } });
 }
 
