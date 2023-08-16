@@ -2,9 +2,14 @@
 import { ref } from 'vue';
 import { useFileStore } from '@/stores/adsfile';
 import { useLogStore } from '@/stores/adslog';
+import { useAuth0 } from '@auth0/auth0-vue';
+
+
+const { getAccessTokenSilently } = useAuth0();
 
 const file = ref<File | null>(null);
 const dialog = ref<boolean>(false);
+const token = ref<string>();
 const fileStore = useFileStore();
 const logStore = useLogStore();
 
@@ -14,8 +19,11 @@ const uploadFile = async (): Promise<void> => {
     uploadData.append("processed", "false");
     try {
         fileStore.isLoading = true;
-        await fetch(`http://${import.meta.env.VITE_AMZ_API}/upload`, {
+        await fetch(`https://${import.meta.env.VITE_AMZ_API}/upload`, {
             method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            },
             body: uploadData
         });
         setInterval(() => {
@@ -28,6 +36,11 @@ const uploadFile = async (): Promise<void> => {
     } catch (e) {
         console.error(e);
     }
+}
+
+async function getToken(): Promise<String> {
+    token.value = await getAccessTokenSilently();
+    return token.value;
 }
 
 </script>

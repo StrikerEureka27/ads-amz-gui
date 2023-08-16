@@ -1,7 +1,8 @@
 import AppVue from '@/App.vue'
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import Home from '@/views/Home.vue';
-import LogIn from '@/views/LogIn.vue';
+import Welcome from '@/views/Welcome.vue';
+import AccessDenied from '@/components/AccessDenied.vue';
 
 const router = createRouter({
   //history: createWebHistory(import.meta.env.BASE_URL)
@@ -10,17 +11,34 @@ const router = createRouter({
     {
       path: '/',
       name: 'App',
-      component: AppVue
+      component: AppVue,
+      meta: {
+        title: 'AMZWEB'
+      }
     },
     {
       path: '/Home',
       name: 'Home',
-      component: Home
+      component: Home,
+      meta: {
+        title: 'AMZWEB'
+      }
     },
     {
-      path: '/LogIn',
-      name: 'LogIn',
-      component: LogIn
+      path: '/Welcome',
+      name: 'Welcome',
+      component: Welcome,
+      meta: {
+        title: 'AMZWEB'
+      }
+    },
+    {
+      path: '/AccessDenied',
+      name: 'AccessDenied',
+      component: AccessDenied,
+      meta: {
+        title: 'AMZWEB'
+      }
     }
   ]
 })

@@ -1,15 +1,19 @@
-import { ref } from 'vue'
-import { defineStore } from 'pinia'
-import type { ILog } from '@/data/log.model'
+import { ref } from 'vue';
+import { defineStore } from 'pinia';
+import type { ILog } from '@/data/log.model';
+import { useAuth0 } from '@auth0/auth0-vue';
 
 export const useLogStore = defineStore('log', () => {
+    const { getAccessTokenSilently } = useAuth0();
     const logs = ref<ILog[]>([]);
+    const token = ref<string>();
     async function getLogs(): Promise<void> {
         try {
-            const response = await fetch(`http://${import.meta.env.VITE_AMZ_API}/log/all`, {
+            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/log/all`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
                 }
             });
             logs.value = await response.json();
@@ -18,6 +22,11 @@ export const useLogStore = defineStore('log', () => {
         }
 
     };
+
+    async function getToken (): Promise<String>  {
+        token.value = await getAccessTokenSilently();
+        return token.value;
+    }
 
     function sortAndFilterLogs(): ILog[] {
         const logsCopy = [...logs.value]; 

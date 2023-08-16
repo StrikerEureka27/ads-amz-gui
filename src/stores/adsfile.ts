@@ -1,20 +1,24 @@
-import { ref } from 'vue'
-import { defineStore } from 'pinia'
-import type { IFile } from '@/data/file.model'
+import { ref } from 'vue';
+import { defineStore } from 'pinia';
+import type { IFile } from '@/data/file.model';
 import { useLogStore } from '@/stores/adslog';
+import { useAuth0 } from '@auth0/auth0-vue';
 
 export const useFileStore = defineStore('file', () => {
+    const { getAccessTokenSilently } = useAuth0();
     const files = ref<IFile[]>([]);
     const isLoading = ref<boolean>(false);
     const load = ref<number>(0);
     const processed = ref<boolean | undefined>(false);
     const logStore = useLogStore();
+    const token = ref<string>();
     async function getFiles(): Promise<void> {
         try {
-            const res = await fetch(`http://${import.meta.env.VITE_AMZ_API}/all`, {
+            const res = await fetch(`https://${import.meta.env.VITE_AMZ_API}/all`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
                 }
             });
             files.value = await res.json();
@@ -23,6 +27,11 @@ export const useFileStore = defineStore('file', () => {
         }
 
     };
+
+    async function getToken (): Promise<String>  {
+        token.value = await getAccessTokenSilently();
+        return token.value;
+    }
 
     async function isProcessed(id: number): Promise<boolean | undefined> {
         try {

@@ -7,7 +7,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
 
 const fileStore = useFileStore();
 const logStore = useLogStore();
-const { logout } = useAuth0();
+const { logout, user } = useAuth0();
 
 onMounted(() => {
     fileStore.getFiles();
@@ -18,6 +18,7 @@ const reloadStores = () => {
     fileStore.getFiles();
     logStore.getLogs();
 };
+
 
 const logOut = ():void =>{
     logout({ logoutParams: { returnTo: window.location.origin } });
@@ -39,7 +40,9 @@ const changeAlertColor = (message: string = 'error'): string => {
                 Actions
             </v-card-title>
             <v-divider></v-divider>
-            <v-card-text>Select a option</v-card-text>
+            <v-card-subtitle class="mt-2">Account</v-card-subtitle>
+            <v-card-text> {{ user }}</v-card-text>
+            <v-card-subtitle class="mt-2" >Actions</v-card-subtitle>
             <v-card-actions class="d-flex flex-column ma-0 pa-2">
                 <load-file></load-file>
                 <v-btn class="pa-0 ma-0 mt-2" size="x-small" color="secondary" variant="tonal" disabled

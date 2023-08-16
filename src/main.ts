@@ -31,14 +31,14 @@ app.use(createPinia());
 app.use(router);
 app.use(vuetify);
 
-console.log(window.location.origin)
 
 app.use(
     createAuth0({
-        domain: "dev-a81sge7e.us.auth0.com",
-        clientId: "66SG7fZxXj6lgyybID4HjwoAr1fnx31w",
+        domain: import.meta.env.VITE_AMZ_DOMAIN,
+        clientId: import.meta.env.VITE_AMZ_CLIENT_ID,
         authorizationParams: {
-            redirect_uri: window.location.origin
+            redirect_uri: window.location.origin,
+            audience: import.meta.env.VITE_AMZ_AUDIENCE,
         }
     })
 );
