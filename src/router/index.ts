@@ -1,5 +1,5 @@
-import AppVue from '@/App.vue'
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import AppVue from '@/App.vue';
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Welcome from '@/views/Welcome.vue';
 import AccessDenied from '@/components/AccessDenied.vue';
