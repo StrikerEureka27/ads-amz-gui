@@ -41,7 +41,7 @@ const changeAlertColor = (message: string = 'error'): string => {
             </v-card-title>
             <v-divider></v-divider>
             <v-card-subtitle class="mt-2">Account</v-card-subtitle>
-            <v-card-text> {{ user }}</v-card-text>
+            <v-card-text> {{ user?.nickname }}</v-card-text>
             <v-card-subtitle class="mt-2" >Actions</v-card-subtitle>
             <v-card-actions class="d-flex flex-column ma-0 pa-2">
                 <load-file></load-file>
