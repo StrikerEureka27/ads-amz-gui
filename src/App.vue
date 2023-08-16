@@ -22,16 +22,11 @@ const validateAuthenticated = (): boolean => {
 
 <template>
     <v-app>
-        <v-layout v-if="validateAuthenticated()" class="test">
-            <NavigationBar></NavigationBar>
-            <v-main class="d-flex align-center">
-                <RouterView></RouterView>
-            </v-main>
-            <FotterBar></FotterBar>
-        </v-layout>
-        <div v-else>
-            <AccessDenied></AccessDenied>
-        </div>
+        <NavigationBar></NavigationBar>
+        <v-main class="d-flex align-center">
+            <RouterView></RouterView>
+        </v-main>
+        <FotterBar></FotterBar>
     </v-app>
 </template>
 
