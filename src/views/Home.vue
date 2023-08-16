@@ -1,13 +1,22 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 import LoadFile from '@/components/LoadFile.vue';
 import { useFileStore } from '@/stores/adsfile';
 import { useLogStore } from '@/stores/adslog';
 import { useAuth0 } from '@auth0/auth0-vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const fileStore = useFileStore();
 const logStore = useLogStore();
-const { logout, user } = useAuth0();
+const route = useRoute();
+const router = useRouter();
+const { logout, user, isAuthenticated } = useAuth0();
+
+onBeforeMount(async ()=>{
+    if(!isAuthenticated.value){
+        router.push({name: 'AccessDenied'})
+    }
+});
 
 onMounted(() => {
     fileStore.getFiles();
@@ -18,6 +27,7 @@ const reloadStores = () => {
     fileStore.getFiles();
     logStore.getLogs();
 };
+
 
 
 const logOut = ():void =>{

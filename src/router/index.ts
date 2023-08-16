@@ -1,18 +1,12 @@
-import AppVue from '@/App.vue';
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Welcome from '@/views/Welcome.vue';
 import AccessDenied from '@/components/AccessDenied.vue';
 import NotFound from '@/components/NotFound.vue';
+import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    {
-      path: '/',
-      name: 'App',
-      component: AppVue,
-    },
     {
       path: '/Home',
       name: 'Home',
@@ -35,9 +29,10 @@ const router = createRouter({
     },
     {
       path: '/:catchAll(.*)',
-      redirect: '/'
+      redirect: '/Welcome'
     }
   ]
 })
+
 
 export default router

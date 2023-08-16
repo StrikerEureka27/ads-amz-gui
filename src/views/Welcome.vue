@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
 import { useAuth0 } from '@auth0/auth0-vue';
-const { loginWithRedirect } = useAuth0();
 
+const { loginWithRedirect } = useAuth0();
 
 function logIn() {
     return loginWithRedirect();
@@ -12,9 +12,9 @@ function logIn() {
 <template>
     <v-container class="d-flex justify-center" fluid>
         <v-card class="amz-logo" variant="tonal">
-            <v-img width="210" height="210" src="https://i.imgur.com/gY3eDfr.png" ></v-img>
+            <v-img width="210" height="210" src="https://i.imgur.com/gY3eDfr.png"></v-img>
         </v-card>
-        <v-card class="d-flex flex-column align-start" color="#FFFFFF00" elevation="0" >
+        <v-card class="d-flex flex-column align-start" color="#FFFFFF00" elevation="0">
             <v-card-title>
                 <span class="text-h1">Hello,</span>
             </v-card-title>
@@ -28,10 +28,8 @@ function logIn() {
     </v-container>
 </template>
 <style scoped>
-
-
 @media only screen and (max-width: 600px) {
-    .amz-logo{
+    .amz-logo {
         display: none;
     }
 }
@@ -40,6 +38,4 @@ function logIn() {
     font-size: larger;
     color: rgba(255, 255, 255, 0.753);
 }
-
-
 </style>

@@ -1,32 +1,17 @@
 <script setup lang="ts">
 
 import NavigationBar from '@/components/NavigationBar.vue';
-import FotterBar from '@/components/FotterBar.vue';
-import { useAuth0 } from '@auth0/auth0-vue';
-import { useRoute } from 'vue-router';
-import AccessDenied from './components/AccessDenied.vue';
-
-const route = useRoute();
-
-const { isAuthenticated } = useAuth0();
-
-const validateAuthenticated = (): boolean => {
-    if (route.path == "/Welcome" && !isAuthenticated.value) {
-        return true;
-    } else {
-        return isAuthenticated.value;
-    }
-}
+import Footer from '@/components/FooterBar.vue';
 
 </script>
 
 <template>
     <v-app>
-        <NavigationBar></NavigationBar>
-        <v-main class="d-flex align-center">
-            <RouterView></RouterView>
+        <navigation-bar></navigation-bar>
+        <v-main class="d-flex justify-center align-center">
+            <router-view></router-view>
         </v-main>
-        <FotterBar></FotterBar>
+        <footer></footer>
     </v-app>
 </template>
 
