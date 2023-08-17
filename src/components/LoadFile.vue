@@ -19,10 +19,11 @@ const uploadFile = async (): Promise<void> => {
     uploadData.append("processed", "false");
     try {
         fileStore.isLoading = true;
+        let token: string = await getAccessTokenSilently();
         await fetch(`https://${import.meta.env.VITE_AMZ_API}/upload`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${getToken()}`
+                Authorization: `Bearer ${token}`
             },
             body: uploadData
         });
@@ -38,10 +39,6 @@ const uploadFile = async (): Promise<void> => {
     }
 }
 
-async function getToken(): Promise<String> {
-    token.value = await getAccessTokenSilently();
-    return token.value;
-}
 
 </script>
 <template>

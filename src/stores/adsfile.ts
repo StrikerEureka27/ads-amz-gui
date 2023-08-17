@@ -17,10 +17,9 @@ export const useFileStore = defineStore('file', () => {
             let token: string = await getAccessTokenSilently();
             const res = await fetch(`https://${import.meta.env.VITE_AMZ_API}/all`, {
                 method: 'GET',
-                mode: 'no-cors',
                 headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
+                     Authorization: `Bearer ${token}`,
+                    //'Content-Type': 'application/json',
                 }
             });
             files.value = await res.json();
@@ -29,11 +28,6 @@ export const useFileStore = defineStore('file', () => {
         }
 
     };
-
-    async function getToken (): Promise<String>  {
-        let token: string = await getAccessTokenSilently();
-        return token;
-    }
 
     async function isProcessed(id: number): Promise<boolean | undefined> {
         try {
@@ -53,9 +47,11 @@ export const useFileStore = defineStore('file', () => {
     const uploadStep = async (id: number): Promise<void> => {
         try {
             load.value = 25;
-            await fetch(`http://${import.meta.env.VITE_AMZ_API}/step/${id}`, {
+            let token: string = await getAccessTokenSilently();
+            await fetch(`https://${import.meta.env.VITE_AMZ_API}/step/${id}`, {
                 method: 'PUT',
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -79,10 +75,12 @@ export const useFileStore = defineStore('file', () => {
 
     async function deleteFile(id: number): Promise<void> {
         try {
+            let token: string = await getAccessTokenSilently();
             isLoading.value = true;
             await fetch(`http://${import.meta.env.VITE_AMZ_API}/delete/${id}`, {
                 method: 'POST',
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -99,9 +97,11 @@ export const useFileStore = defineStore('file', () => {
 
     async function downloadFile(id: number): Promise<string | undefined> {
         try {
-            const response = await fetch(`http://${import.meta.env.VITE_AMZ_API}/download/${id}`, {
+            let token: string = await getAccessTokenSilently();
+            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/download/${id}`, {
                 method: 'GET',
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });

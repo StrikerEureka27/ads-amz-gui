@@ -9,11 +9,13 @@ export const useLogStore = defineStore('log', () => {
     const token = ref<string>();
     async function getLogs(): Promise<void> {
         try {
+            
+            let token = await getAccessTokenSilently();
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/log/all`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
+                    //'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
                 }
             });
             logs.value = await response.json();
@@ -23,13 +25,13 @@ export const useLogStore = defineStore('log', () => {
 
     };
 
-    async function getToken (): Promise<String>  {
+    async function getToken(): Promise<String> {
         token.value = await getAccessTokenSilently();
         return token.value;
     }
 
     function sortAndFilterLogs(): ILog[] {
-        const logsCopy = [...logs.value]; 
+        const logsCopy = [...logs.value];
         return logsCopy.sort((a, b) => a.id - b.id).reverse().filter((e, i) => { if (i <= 6) { return e } });
     }
 

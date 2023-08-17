@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import NavigationBar from '@/components/NavigationBar.vue';
-import Footer from '@/components/FooterBar.vue';
+import FooterBar from '@/components/FooterBar.vue';
 
 </script>
 
@@ -11,7 +11,7 @@ import Footer from '@/components/FooterBar.vue';
         <v-main class="d-flex justify-center align-center">
             <router-view></router-view>
         </v-main>
-        <footer></footer>
+        <footer-bar></footer-bar>
     </v-app>
 </template>
 
