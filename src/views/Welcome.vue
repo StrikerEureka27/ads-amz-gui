@@ -1,16 +1,23 @@
 <script setup lang="ts">
 
 import { useAuth0 } from '@auth0/auth0-vue';
+import { useRouter } from 'vue-router';
 
-const { loginWithRedirect } = useAuth0();
+const { loginWithRedirect, isAuthenticated } = useAuth0();
+const router = useRouter();
+
+
+function redirect(){
+    router.push({name: 'Home'});
+}
 
 function logIn() {
     return loginWithRedirect();
-}
+};
 
 </script>
 <template>
-    <v-container class="d-flex justify-center" fluid>
+    <v-container v-if="!isAuthenticated ? true :  redirect()" class="d-flex justify-center" fluid>
         <v-card class="amz-logo" variant="tonal">
             <v-img width="210" height="210" src="https://i.imgur.com/gY3eDfr.png"></v-img>
         </v-card>

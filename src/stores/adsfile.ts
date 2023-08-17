@@ -11,14 +11,16 @@ export const useFileStore = defineStore('file', () => {
     const load = ref<number>(0);
     const processed = ref<boolean | undefined>(false);
     const logStore = useLogStore();
-    const token = ref<string>();
+    //const token = ref<string>();
     async function getFiles(): Promise<void> {
         try {
+            let token: string = await getAccessTokenSilently();
             const res = await fetch(`https://${import.meta.env.VITE_AMZ_API}/all`, {
                 method: 'GET',
+                mode: 'no-cors',
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}`
                 }
             });
             files.value = await res.json();
@@ -29,8 +31,8 @@ export const useFileStore = defineStore('file', () => {
     };
 
     async function getToken (): Promise<String>  {
-        token.value = await getAccessTokenSilently();
-        return token.value;
+        let token: string = await getAccessTokenSilently();
+        return token;
     }
 
     async function isProcessed(id: number): Promise<boolean | undefined> {

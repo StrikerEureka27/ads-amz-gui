@@ -1,22 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeMount } from 'vue'
+
+import { onMounted } from 'vue'
 import LoadFile from '@/components/LoadFile.vue';
 import { useFileStore } from '@/stores/adsfile';
 import { useLogStore } from '@/stores/adslog';
 import { useAuth0 } from '@auth0/auth0-vue';
-import { useRoute, useRouter } from 'vue-router';
 
 const fileStore = useFileStore();
 const logStore = useLogStore();
-const route = useRoute();
-const router = useRouter();
 const { logout, user, isAuthenticated } = useAuth0();
 
-onBeforeMount(async ()=>{
-    if(!isAuthenticated.value){
-        router.push({name: 'AccessDenied'})
-    }
-});
 
 onMounted(() => {
     fileStore.getFiles();
@@ -29,9 +22,8 @@ const reloadStores = () => {
 };
 
 
-
-const logOut = ():void =>{
-    logout({ logoutParams: { returnTo: window.location.origin } });
+const logOut = (): void => {
+    logout({ logoutParams: { returnTo: window.location.origin + '/Welcome' } });
 }
 
 const parseDate = (createdAt: Date): string => {
@@ -44,15 +36,23 @@ const changeAlertColor = (message: string = 'error'): string => {
 
 </script>
 <template>
-    <v-container class="d-flex justify-center flex-wrap">
+    <v-container v-if="isAuthenticated" class="d-flex justify-center flex-wrap">
         <v-card class="flex-fill flex-lg-grow-0 flex-md-grow-1 flex-sm-grow-1 ma-1" min-width="260">
             <v-card-title>
                 Actions
             </v-card-title>
             <v-divider></v-divider>
             <v-card-subtitle class="mt-2">Account</v-card-subtitle>
-            <v-card-text> {{ user?.nickname }}</v-card-text>
-            <v-card-subtitle class="mt-2" >Actions</v-card-subtitle>
+            <div class="d-flex justify-center">
+                <div>
+                    <v-img class="ma-2" :style="{ borderRadius: '100px' }" :width="50" :src="user?.picture"></v-img>
+                </div>
+                <div class="d-flex flex-column justify-center">
+                    <p class="font-weight-thin"> {{ user?.nickname }}</p>
+                    <p class="font-weight-thin"> {{ user?.email }}</p>
+                </div>
+            </div>
+            <v-card-subtitle class="mt-2">Actions</v-card-subtitle>
             <v-card-actions class="d-flex flex-column ma-0 pa-2">
                 <load-file></load-file>
                 <v-btn class="pa-0 ma-0 mt-2" size="x-small" color="secondary" variant="tonal" disabled
@@ -74,7 +74,8 @@ const changeAlertColor = (message: string = 'error'): string => {
                 <v-list class="d-flex pa-0">
                     <v-list-item class="ma-2">
                         <v-list-item-subtitle class="mb-2">PROGRESS</v-list-item-subtitle>
-                        <v-progress-circular :rotate="360" :size="100" :width="15" :model-value="fileStore.load" :indeterminate="fileStore.isLoading"  color="secondary">
+                        <v-progress-circular :rotate="360" :size="100" :width="15" :model-value="fileStore.load"
+                            :indeterminate="fileStore.isLoading" color="secondary">
                             {{ fileStore.load + "%" }}
                         </v-progress-circular>
                     </v-list-item>
@@ -103,11 +104,13 @@ const changeAlertColor = (message: string = 'error'): string => {
                         <v-list-item-title> <v-chip variant="tonal" size="x-small">{{ f.id }}</v-chip> {{ f.name
                         }}</v-list-item-title>
                         <v-list-item-subtitle> {{ parseDate(f.createdAt) }} </v-list-item-subtitle>
-                        <v-list-item-subtitle> {{ f.step==0 ? 'Ready to process' : 'Not ready to process or refresh repository' }} </v-list-item-subtitle>
+                        <v-list-item-subtitle> {{ f.step == 0 ? `Ready to process` : `Not ready to process or refresh
+                            repository` }} </v-list-item-subtitle>
                         <template v-slot:append>
                             <v-btn class="mr-2" icon="mdi-delete" size="small" variant="tonal" color="error"
                                 @click="fileStore.deleteFile(f.id)"></v-btn>
-                            <v-btn icon="mdi-arrow-right-thick" size="small" variant="tonal" :disabled="fileStore.load == 0 ? false : true" color="info"
+                            <v-btn icon="mdi-arrow-right-thick" size="small" variant="tonal"
+                                :disabled="fileStore.load == 0 ? false : true" color="info"
                                 @click="fileStore.uploadStep(f.id)"></v-btn>
                         </template>
                     </v-list-item>
@@ -123,7 +126,7 @@ const changeAlertColor = (message: string = 'error'): string => {
                         <v-list-item-title> <v-chip variant="tonal" size="x-small">{{ f.id }}</v-chip> {{ f.name
                         }}</v-list-item-title>
                         <v-list-item-subtitle>{{ parseDate(f.createdAt) }}</v-list-item-subtitle>
-                        <v-list-item-subtitle>{{ f.processed && f.step==2 ? 'Ready for download' : 'Not ready'
+                        <v-list-item-subtitle>{{ f.processed && f.step == 2 ? 'Ready for download' : 'Not ready'
                         }}</v-list-item-subtitle>
                         <template v-slot:append>
                             <v-btn class="mr-2" icon="mdi-delete" size="small" variant="tonal" color="error"
@@ -141,7 +144,8 @@ const changeAlertColor = (message: string = 'error'): string => {
             <v-card-text>View last history operations</v-card-text>
             <v-list>
                 <v-list-item v-for="log in logStore.sortAndFilterLogs()" :key="log.id">
-                    <v-alert icon="mdi-cog" density="compact" variant="tonal" :color="changeAlertColor(log.message)" border="top">
+                    <v-alert icon="mdi-cog" density="compact" variant="tonal" :color="changeAlertColor(log.message)"
+                        border="top">
                         <v-list-item-title>{{ log.message }}</v-list-item-title>
                         <v-list-item-subtitle>{{ parseDate(log.createdAt) }}</v-list-item-subtitle>
                     </v-alert>
@@ -150,4 +154,10 @@ const changeAlertColor = (message: string = 'error'): string => {
         </v-card>
     </v-container>
 </template>
-<style scoped></style>
+<style scoped>
+.profile-picture img {
+    width: 100px;
+    height: 100px;
+    border-radius: 100;
+}
+</style>
