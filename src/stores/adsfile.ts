@@ -11,7 +11,6 @@ export const useFileStore = defineStore('file', () => {
     const load = ref<number>(0);
     const processed = ref<boolean | undefined>(false);
     const logStore = useLogStore();
-    //const token = ref<string>();
     async function getFiles(): Promise<void> {
         try {
             let token: string = await getAccessTokenSilently();
@@ -19,7 +18,6 @@ export const useFileStore = defineStore('file', () => {
                 method: 'GET',
                 headers: {
                      Authorization: `Bearer ${token}`,
-                    //'Content-Type': 'application/json',
                 }
             });
             files.value = await res.json();
@@ -28,21 +26,6 @@ export const useFileStore = defineStore('file', () => {
         }
 
     };
-
-    async function isProcessed(id: number): Promise<boolean | undefined> {
-        try {
-            const res = await fetch(`http://${import.meta.env.VITE_AMZ_API}/processed/${id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            processed.value = await res.json();
-            return processed.value == undefined ? false : processed.value;
-        } catch (e) {
-            console.error(e);
-        }
-    }
 
     const uploadStep = async (id: number): Promise<void> => {
         try {
@@ -77,7 +60,7 @@ export const useFileStore = defineStore('file', () => {
         try {
             let token: string = await getAccessTokenSilently();
             isLoading.value = true;
-            await fetch(`http://${import.meta.env.VITE_AMZ_API}/delete/${id}`, {
+            await fetch(`https://${import.meta.env.VITE_AMZ_API}/delete/${id}`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,

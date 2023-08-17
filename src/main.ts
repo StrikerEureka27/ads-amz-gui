@@ -39,7 +39,7 @@ app.use(
         authorizationParams: {
             redirect_uri: window.location.origin,
             audience: import.meta.env.VITE_AMZ_AUDIENCE,
-            scope: 'private'
+            scope: 'private openid email profile'
         }
     })
 );
