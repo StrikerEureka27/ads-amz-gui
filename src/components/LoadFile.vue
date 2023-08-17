@@ -4,12 +4,10 @@ import { useFileStore } from '@/stores/adsfile';
 import { useLogStore } from '@/stores/adslog';
 import { useAuth0 } from '@auth0/auth0-vue';
 
-
 const { getAccessTokenSilently } = useAuth0();
 
 const file = ref<File | null>(null);
 const dialog = ref<boolean>(false);
-const token = ref<string>();
 const fileStore = useFileStore();
 const logStore = useLogStore();
 
@@ -42,13 +40,13 @@ const uploadFile = async (): Promise<void> => {
 
 </script>
 <template>
-    <v-dialog v-model="dialog" width="auto">
+    <v-dialog width="auto" v-model="dialog" >
         <template v-slot:activator="{ props }">
             <v-btn size="x-small" color="secondary" variant="tonal" @click="dialog = true" block>
                 load file
             </v-btn>
         </template>
-        <v-card class="d-flex justify-center" width="500">
+        <v-card min-width="500">
             <v-card-title class="d-flex justify-space-between align-center">
                 <span>Upload file</span>
                 <v-btn color="secondary" variant="tonal" icon="mdi-close-thick" @click="dialog = false"
@@ -65,4 +63,5 @@ const uploadFile = async (): Promise<void> => {
         </v-card>
     </v-dialog>
 </template>
-<style scoped></style>
+<style scoped>
+</style>

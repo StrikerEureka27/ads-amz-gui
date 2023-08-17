@@ -48,8 +48,8 @@ const changeAlertColor = (message: string = 'error'): string => {
                     <v-img class="ma-2" :style="{ borderRadius: '100px' }" :width="50" :src="user?.picture"></v-img>
                 </div>
                 <div class="d-flex flex-column justify-center">
-                    <p class="font-weight-thin"> {{ user?.nickname }}</p>
-                    <p class="font-weight-thin"> {{ user?.email }}</p>
+                    <p class="font-weight-thin ctxt"> {{ user?.nickname }}</p>
+                    <p class="font-weight-thin ctxt"> {{ user?.email }}</p>
                 </div>
             </div>
             <v-card-subtitle class="mt-2">Actions</v-card-subtitle>
@@ -160,4 +160,10 @@ const changeAlertColor = (message: string = 'error'): string => {
     height: 100px;
     border-radius: 100;
 }
+
+.ctxt {
+    color: rgba(255, 255, 255, 0.753);
+}
+
+
 </style>
