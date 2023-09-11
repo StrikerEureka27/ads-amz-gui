@@ -5,6 +5,8 @@ import LoadFile from '@/components/LoadFile.vue';
 import { useFileStore } from '@/stores/adsfile';
 import { useLogStore } from '@/stores/adslog';
 import { useAuth0 } from '@auth0/auth0-vue';
+import Account from '@/components/Account.vue';
+import FilterModel from '@/components/FilterModal.vue';
 
 const fileStore = useFileStore();
 const logStore = useLogStore();
@@ -55,9 +57,8 @@ const changeAlertColor = (message: string = 'error'): string => {
             <v-card-subtitle class="mt-2">Actions</v-card-subtitle>
             <v-card-actions class="d-flex flex-column ma-0 pa-2">
                 <load-file></load-file>
-                <v-btn class="pa-0 ma-0 mt-2" size="x-small" color="secondary" variant="tonal" disabled
-                    block>Accounts</v-btn>
-                <v-btn class="mt-2 ma-0" size="x-small" color="secondary" variant="tonal" disabled block>Filters</v-btn>
+                <account></account>
+                <filter-model></filter-model>
                 <v-btn class="mt-2 ma-0" size="x-small" color="secondary" variant="tonal" disabled block>Parameters</v-btn>
                 <v-btn class="mt-2 ma-0" size="x-small" color="red" variant="tonal" @click="logOut()" block>Logout</v-btn>
             </v-card-actions>

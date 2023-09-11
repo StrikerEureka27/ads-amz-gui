@@ -14,7 +14,7 @@ export const useFileStore = defineStore('file', () => {
     async function getFiles(): Promise<void> {
         try {
             let token: string = await getAccessTokenSilently();
-            const res = await fetch(`https://${import.meta.env.VITE_AMZ_API}/all`, {
+            const res = await fetch(`https://${import.meta.env.VITE_AMZ_API}/file/all`, {
                 method: 'GET',
                 headers: {
                      Authorization: `Bearer ${token}`,

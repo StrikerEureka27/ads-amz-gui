@@ -18,7 +18,7 @@ const uploadFile = async (): Promise<void> => {
     try {
         fileStore.isLoading = true;
         let token: string = await getAccessTokenSilently();
-        await fetch(`https://${import.meta.env.VITE_AMZ_API}/upload`, {
+        await fetch(`http://${import.meta.env.VITE_AMZ_API}/file/upload`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`
@@ -42,15 +42,14 @@ const uploadFile = async (): Promise<void> => {
 <template>
     <v-dialog width="auto" v-model="dialog" >
         <template v-slot:activator="{ props }">
-            <v-btn size="x-small" color="secondary" variant="tonal" @click="dialog = true" block>
+            <v-btn class="ma-1" size="x-small" color="secondary" variant="tonal" @click="dialog = true" block>
                 load file
             </v-btn>
         </template>
         <v-card min-width="500">
             <v-card-title class="d-flex justify-space-between align-center">
                 <span>Upload file</span>
-                <v-btn color="secondary" variant="tonal" icon="mdi-close-thick" @click="dialog = false"
-                    size="small"></v-btn>
+                <v-btn color="error" variant="text" icon="mdi-close-thick" @click="dialog = false" size="small"></v-btn>
             </v-card-title>
             <v-divider></v-divider>
             <v-card-item>
