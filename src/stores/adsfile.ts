@@ -9,8 +9,9 @@ export const useFileStore = defineStore('file', () => {
     const files = ref<IFile[]>([]);
     const isLoading = ref<boolean>(false);
     const load = ref<number>(0);
-    const processed = ref<boolean | undefined>(false);
     const logStore = useLogStore();
+
+    
     async function getFiles(): Promise<void> {
         try {
             let token: string = await getAccessTokenSilently();

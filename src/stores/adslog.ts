@@ -11,7 +11,7 @@ export const useLogStore = defineStore('log', () => {
         try {
             
             let token = await getAccessTokenSilently();
-            const response = await fetch(`http://${import.meta.env.VITE_AMZ_API}/file/logs`, {
+            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/file/logs`, {
                 method: 'GET',
                 headers: {
                     //'Content-Type': 'application/json',

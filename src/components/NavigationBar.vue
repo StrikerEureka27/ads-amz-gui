@@ -10,7 +10,7 @@ function showAppBar(): boolean {
 
 </script>
 <template>
-  <v-app-bar v-if="showAppBar()" scroll-behavior="hide" elevation="2">
+  <v-app-bar v-if="showAppBar()"  elevation="2">
     <v-list class="d-flex pa-2">
       <v-img width="40" src="https://i.imgur.com/gY3eDfr.png"></v-img>
       <v-list-item>

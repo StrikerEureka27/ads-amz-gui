@@ -11,8 +11,8 @@ const router = useRouter();
 
 
 const accountConfiguration = ref<AccountconfigurationStep[]>([
-    { id: 1, name: 'References', path: '/references' },
-    { id: 2, name: 'Filters' , path: '/filters'},
+    { id: 1, name: 'References', path: '/AccountReference' },
+    { id: 2, name: 'Filters' , path: '/AccountFilter'},
     { id: 3, name: 'Parameters', path: '/parameters' },
     { id: 4, name: 'Formulas', path: '/formulas' }
 ]);

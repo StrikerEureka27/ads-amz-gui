@@ -1,30 +1,49 @@
 <script setup lang="ts" >
 
-import { ref } from 'vue';
-const dialog = ref<boolean>(false);
+import { ref, onMounted } from 'vue';
+import type { IAccountUpdateDto} from '@/data/account.model';
+import { useAccountStore } from '@/stores/account';
+
+const accountStore = useAccountStore();
+const props = defineProps(['account']);
+const showAccountEdit = ref<boolean>(false);
+let account = ref<IAccountUpdateDto>({
+    id: 0,
+    name: '',
+    sheet: 1,
+    active: false,
+});
+
+onMounted(()=>{
+    console.log('mounted account edit');
+});
+
+
+
+account = props.account;
 
 </script>
 <template>
-    <v-dialog width="auto" v-model="dialog">
+    <v-dialog width="auto" v-model="showAccountEdit">
         <template v-slot:activator="{ props }">
-            <v-btn class="mr-2" icon="mdi-pencil" size="small" variant="tonal" color="info" @click="dialog = true"></v-btn>
+            <v-btn class="mr-2" icon="mdi-pencil" size="small" variant="tonal" color="info" @click="showAccountEdit = true"></v-btn>
         </template>
         <v-card min-width="500">
             <v-card-title class="d-flex justify-space-between align-center">
                 Edit account
-                <v-btn color="error" variant="text" icon="mdi-close-thick" @click="dialog = false"
+                <v-btn color="error" variant="text" icon="mdi-close-thick" @click="showAccountEdit = false"
                     size="small"></v-btn>
             </v-card-title>
             <v-divider></v-divider>
             <v-card-item>
                 <form>
-                    <v-text-field label="Name" variant="solo-filled" density="compact" clearable required></v-text-field>
-                    <v-text-field label="Sheet number" variant="solo-filled" density="compact" type="number" clearable required></v-text-field>
-                    <v-checkbox label="Active?" required></v-checkbox>
+                    <v-text-field v-model="account.name" label="Name" variant="solo-filled" density="compact" clearable required></v-text-field>
+                    <v-text-field v-model="account.sheet" label="Sheet number" variant="solo-filled" density="compact" clearable required></v-text-field>
+                    <v-checkbox v-model="account.active" label="Active?" required></v-checkbox>
                 </form>
             </v-card-item>
             <v-card-actions class="d-flex justify-center">
-                <v-btn color="secondary" @click="dialog = false" variant="tonal" block>UPDATE</v-btn>
+                <v-btn color="secondary" variant="tonal" block @click="accountStore.updateAccount(account); showAccountEdit = false" >UPDATE</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
