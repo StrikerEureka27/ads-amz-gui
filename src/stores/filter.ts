@@ -7,9 +7,11 @@ export const useFilterStore = defineStore('filter', () => {
     const { getAccessTokenSilently } = useAuth0();
     const filters = ref<IFilter[]>([]);
     const filtersTypes = ref<IFilterType[]>([]);
+    const isLoading = ref<boolean>(false);
 
     async function getFilters(): Promise<void> {
         try {
+            isLoading.value = true;
             let token = await getAccessTokenSilently();
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/filter/all`, {
                 method: 'GET',
@@ -18,6 +20,7 @@ export const useFilterStore = defineStore('filter', () => {
                 }
             });
             filters.value = await response.json();
+            isLoading.value = false;
         } catch (e) {
             console.error(e);
         }
@@ -93,5 +96,5 @@ export const useFilterStore = defineStore('filter', () => {
         }
     };
 
-    return { filters, filtersTypes, getFilters, createFilter, getFilterTypes, updateFilter, deleteFilter }
+    return { filters, filtersTypes, getFilters, createFilter, getFilterTypes, updateFilter, deleteFilter, isLoading }
 });

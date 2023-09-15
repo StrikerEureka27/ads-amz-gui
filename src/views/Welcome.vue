@@ -8,7 +8,7 @@ const router = useRouter();
 
 
 function redirect(){
-    router.push({name: 'Home'});
+    router.push({path: '/Home'});
 }
 
 function logIn() {

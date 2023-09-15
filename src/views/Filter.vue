@@ -3,7 +3,6 @@
 import { onMounted } from 'vue';
 import FilterEdit from '@/components/FilterEdit.vue';
 import FilterCreate from '@/components/FilterCreate.vue';
-import { ref } from 'vue';
 import { useFilterStore } from '@/stores/filter';
 
 
@@ -26,6 +25,7 @@ const getColor =(flag: boolean) =>{
             <v-btn color="error" variant="text" icon="mdi-close-thick" size="x-small"></v-btn>
         </v-card-title>
         <v-divider></v-divider>
+        <v-progress-linear v-if="filterStore.isLoading" :indeterminate="filterStore.isLoading"></v-progress-linear>
         <v-card-item>
             <v-list>
                 <v-list-item  class="mt-2 pa-2" v-for="filter in filterStore.filters" :key="filter.id" :value="filter" border>

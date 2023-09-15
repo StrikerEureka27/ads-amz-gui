@@ -7,7 +7,7 @@ const { logout, user, isAuthenticated } = useAuth0();
 
 
 const navigation = (toPath: string):void =>{
-    router.push( { path: toPath } );
+    router.push( { path: '/home' + toPath } );
 }
 
 const logOut = (): void => {

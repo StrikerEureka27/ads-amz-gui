@@ -8,8 +8,11 @@ export const useAccountStore = defineStore('account', () => {
     const { getAccessTokenSilently } = useAuth0();
     const accounts = ref<IAccount[]>([]);
     const showAccountCreateModal = ref<boolean>(false);
+    const isLoading = ref<boolean>(false);
+
     async function getAccounts(): Promise<void> {
         try {
+            isLoading.value = true;
             let token = await getAccessTokenSilently();
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/account/all`, {
                 method: 'GET',
@@ -18,6 +21,7 @@ export const useAccountStore = defineStore('account', () => {
                 }
             });
             accounts.value = await response.json();
+            isLoading.value = false;
         } catch (e) {
             console.error(e);
         }
@@ -29,7 +33,7 @@ export const useAccountStore = defineStore('account', () => {
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/account/create`, {
                 method: 'POST',
                 headers: {
-                    Authorization: `Bearer ${token}`, 
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data)
@@ -49,7 +53,7 @@ export const useAccountStore = defineStore('account', () => {
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/account/update`, {
                 method: 'PUT',
                 headers: {
-                    Authorization: `Bearer ${token}`, 
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data)
@@ -63,5 +67,5 @@ export const useAccountStore = defineStore('account', () => {
 
 
 
-    return { accounts, getAccounts, createAccount, updateAccount, showAccountCreateModal  }
+    return { accounts, getAccounts, createAccount, updateAccount, showAccountCreateModal, isLoading }
 });

@@ -26,6 +26,7 @@ const parseDate = (createdAt: Date): string => {
                     @click="reloadStores()"></v-btn>
             </v-card-title>
             <v-divider></v-divider>
+            <v-progress-linear v-if="fileStore.isLoadingLinear" :indeterminate="fileStore.isLoadingLinear"></v-progress-linear>
             <v-card-text>Manage and visualize current workflow</v-card-text>
             <v-container>
                 <v-list class="d-flex pa-0">

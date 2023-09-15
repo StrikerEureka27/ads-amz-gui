@@ -10,10 +10,12 @@ export const useFileStore = defineStore('file', () => {
     const isLoading = ref<boolean>(false);
     const load = ref<number>(0);
     const logStore = useLogStore();
+    const isLoadingLinear = ref<boolean>();
 
     
     async function getFiles(): Promise<void> {
         try {
+            isLoadingLinear.value = true;
             let token: string = await getAccessTokenSilently();
             const res = await fetch(`https://${import.meta.env.VITE_AMZ_API}/file/all`, {
                 method: 'GET',
@@ -22,6 +24,7 @@ export const useFileStore = defineStore('file', () => {
                 }
             });
             files.value = await res.json();
+            isLoadingLinear.value = false;
         } catch (e) {
             console.error(e);
         }
@@ -124,6 +127,7 @@ export const useFileStore = defineStore('file', () => {
         files,
         load,
         isLoading,
+        isLoadingLinear,
         getFiles,
         getProcessedFiles,
         getNotProcessedFiles,
