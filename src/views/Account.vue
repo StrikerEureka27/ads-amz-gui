@@ -6,7 +6,6 @@ import { useAccountStore } from '@/stores/account';
 import AccountCreate from '@/components/AccountCreate.vue';
 import router from '@/router';
 import AccountConfiguration from '@/components/AccountConfiguration.vue';
-
 const accountStore = useAccountStore();
 
 onMounted(() => {
@@ -19,11 +18,11 @@ const parseDate = (createdAt: Date): string => {
 
 const getColor =(flag: boolean) =>{
     return flag ? 'green' : 'red';
-}
+};
 
 const navigation = (toPath: string):void =>{
     router.push( { path: '/home/account' + toPath + '/1' } );
-}
+};
 
 </script>
 <template>

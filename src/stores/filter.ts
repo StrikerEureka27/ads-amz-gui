@@ -1,11 +1,15 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useAuth0 } from '@auth0/auth0-vue';
-import type { IFilter, IFilterType, IFilterCreateDto, IFilterUpdateDto } from '@/data/filter.model';
+import type { IFilter, IFilterType, IFilterCreateDto, IFilterUpdateDto, IAccountFilter, IAccountFiltersCreateDto } from '@/data/filter.model';
+import type { IAccount } from '@/data/account.model';
 
 export const useFilterStore = defineStore('filter', () => {
     const { getAccessTokenSilently } = useAuth0();
+    const account = ref<IAccount>();
     const filters = ref<IFilter[]>([]);
+    const accountFilters = ref<IAccountFilter[]>([]);
+    const accountReferenceCreate = ref<IAccountFiltersCreateDto[]>([]);
     const filtersTypes = ref<IFilterType[]>([]);
     const isLoading = ref<boolean>(false);
 
@@ -42,6 +46,39 @@ export const useFilterStore = defineStore('filter', () => {
         }
     };
 
+    async function getAccountFilters(accountId: number): Promise<void> {
+        try {
+            let token = await getAccessTokenSilently();
+            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/account/${accountId}/filter`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            accountFilters.value = await response.json();
+        } catch (e) {
+            console.error(e);
+        }
+
+    };
+
+    async function getAccountFiltersByAccountId(accountId: number): Promise<void> {
+        try {
+            isLoading.value = true;
+            let token = await getAccessTokenSilently();
+            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/account/${accountId}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            account.value = await response.json();
+            isLoading.value = false;
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     async function createFilter(data: IFilterCreateDto): Promise<void> {
         console.log(data);
         try {
@@ -67,7 +104,7 @@ export const useFilterStore = defineStore('filter', () => {
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/filter/update`, {
                 method: 'PUT',
                 headers: {
-                    Authorization: `Bearer ${token}`, 
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data)
@@ -85,7 +122,7 @@ export const useFilterStore = defineStore('filter', () => {
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/filter/${filterId}/delete`, {
                 method: 'DELETE',
                 headers: {
-                    Authorization: `Bearer ${token}`, 
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 }
             });
@@ -96,5 +133,71 @@ export const useFilterStore = defineStore('filter', () => {
         }
     };
 
-    return { filters, filtersTypes, getFilters, createFilter, getFilterTypes, updateFilter, deleteFilter, isLoading }
+    async function createAccountFilters(accountId: number, filterId: number): Promise<void> {
+        try {
+            accountReferenceCreate.value.push({
+                account: accountId,
+                filter: filterId
+            });
+            let token = await getAccessTokenSilently();
+            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/account/filter/create`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(accountReferenceCreate.value)
+            });
+            getAccountFiltersByAccountId(accountId);
+            accountReferenceCreate.value.pop();
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    async function deleteAccountFilters(accountId: number, filterId: number): Promise<void> {
+        let idToDelete: (number | undefined) = 0;
+        if (findIdToDelete(accountId, filterId) != null) {
+            idToDelete = findIdToDelete(accountId, filterId)?.id;
+        }
+        try {
+            let token = await getAccessTokenSilently();
+            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/account/filter/${idToDelete}/delete`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+            getAccountFiltersByAccountId(accountId);
+        } catch (e) {
+            console.error(e);
+        }
+
+    };
+
+    const findIdToDelete = (accId: number, refId: number) => {
+        let accountFilterRelationship = accountFilters.value.find((e) => {
+            if (accId == e.account && refId == e.filter) {
+                return e.id;
+            }
+        });
+        return accountFilterRelationship;
+    };
+
+    return {
+        account,
+        filters,
+        filtersTypes,
+        deleteAccountFilters, 
+        createAccountFilters, 
+        getFilters,
+        createFilter,
+        getFilterTypes,
+        updateFilter,
+        deleteFilter,
+        getAccountFilters,
+        getAccountFiltersByAccountId,
+        isLoading
+    }
 });

@@ -14,12 +14,6 @@ let account = ref<IAccountUpdateDto>({
     active: false,
 });
 
-onMounted(()=>{
-    console.log('mounted account edit');
-});
-
-
-
 account = props.account;
 
 </script>

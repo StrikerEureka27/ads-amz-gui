@@ -3,12 +3,13 @@ import { defineStore } from 'pinia';
 import { useAuth0 } from '@auth0/auth0-vue';
 import type { IAccount, IAccountCreateDto, IAccountUpdateDto } from '@/data/account.model';
 
-
 export const useAccountStore = defineStore('account', () => {
+
     const { getAccessTokenSilently } = useAuth0();
     const accounts = ref<IAccount[]>([]);
-    const showAccountCreateModal = ref<boolean>(false);
     const isLoading = ref<boolean>(false);
+    const account = ref<IAccount>();
+    const showAccountCreateModal = ref<boolean>(false);
 
     async function getAccounts(): Promise<void> {
         try {
@@ -27,6 +28,7 @@ export const useAccountStore = defineStore('account', () => {
         }
 
     };
+
     async function createAccount(data: IAccountCreateDto): Promise<void> {
         try {
             let token = await getAccessTokenSilently();
@@ -65,7 +67,5 @@ export const useAccountStore = defineStore('account', () => {
         }
     };
 
-
-
-    return { accounts, getAccounts, createAccount, updateAccount, showAccountCreateModal, isLoading }
+    return { account, accounts, getAccounts, createAccount, updateAccount, showAccountCreateModal, isLoading }
 });

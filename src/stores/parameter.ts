@@ -59,6 +59,8 @@ export const useParameterStore = defineStore('parameter', () => {
         }
     };
 
+    
+
     async function updateParameter(data: IParameterUpdateDto): Promise<void> {
         try {
             let token = await getAccessTokenSilently();

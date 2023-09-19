@@ -10,12 +10,12 @@ export interface AccountconfigurationStep {
 export interface IAccount {
     id: number;
     name: string;
-    sheet: number;
-    active: boolean;
-    filters: IFilter[];
-    references: IReference[];
     createdAt: Date;
     createdBy: string;
+    active: boolean;
+    sheet: number;
+    filters: IFilter[];
+    references: IReference[];
 };
 
 export interface IAccountCreateDto extends Omit<IAccount, 'id' | 'createdAt' | 'filters' | 'references'> {};
