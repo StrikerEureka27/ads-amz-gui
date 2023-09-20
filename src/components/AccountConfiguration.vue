@@ -26,9 +26,8 @@ const getColor = (flag: boolean) => {
 
 const accountConfiguration = ref<AccountconfigurationStep[]>([
     { id: 1, name: 'References', path: '/account_reference' },
-    { id: 2, name: 'Filters', path: '/account_filter' },
-    { id: 3, name: 'Parameters', path: '/filter_parameter' },
-    { id: 4, name: 'Formulas', path: '/account_formula' }
+    { id: 2, name: 'Filters and parameters', path: '/account_filter' },
+    { id: 3, name: 'Formulas and references', path: '/account_formula' }
 ]);
 
 const navigation = (navigationPath: string): void => {

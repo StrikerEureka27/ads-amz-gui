@@ -1,4 +1,5 @@
 import type { IFilter } from "./filter.model";
+import type { IFormula } from "./formula.model";
 import type { IReference } from "./reference.model";
 
 export interface AccountconfigurationStep {
@@ -16,9 +17,10 @@ export interface IAccount {
     sheet: number;
     filters: IFilter[];
     references: IReference[];
+    formulas: IFormula[];
 };
 
-export interface IAccountCreateDto extends Omit<IAccount, 'id' | 'createdAt' | 'filters' | 'references'> {};
-export interface IAccountUpdateDto extends Omit<IAccount, 'createdAt' | 'createdBy' | 'filters' | 'references'> {};  
+export interface IAccountCreateDto extends Omit<IAccount, 'id' | 'createdAt' | 'filters' | 'references' | 'formulas'> {};
+export interface IAccountUpdateDto extends Omit<IAccount, 'createdAt' | 'createdBy' | 'filters' | 'references' | 'formulas'> {};  
 
 

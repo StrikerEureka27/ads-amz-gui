@@ -169,6 +169,7 @@ export const useFilterStore = defineStore('filter', () => {
                     'Content-Type': 'application/json',
                 }
             });
+            console.log(response);
             getAccountFiltersByAccountId(accountId);
         } catch (e) {
             console.error(e);

@@ -1,6 +1,6 @@
 <script setup lang="ts" >
 
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import FilterEdit from '@/components/FilterEdit.vue';
 import FilterCreate from '@/components/FilterCreate.vue';
 import { useFilterStore } from '@/stores/filter';
@@ -12,9 +12,13 @@ const props = defineProps(['account']);
 const filterStore = useFilterStore();
 const showCleanView = ref<boolean>(true);
 const account = ref<IAccount>(props.account);
+const parameterVisibility: ParameterVisibility = {};
 
 onMounted(() => {
     filterStore.getFilterTypes();
+    watch(() => props.account, (newAccount) => {
+        account.value = newAccount;
+    }, { deep: true });
     changeView();
 });
 
@@ -42,13 +46,22 @@ const changeView = (): void => {
 const changeToCleanView = (): void => {
     showCleanView.value = !showCleanView.value;
     changeView();
-}
+};
+
+
+type ParameterVisibility = {
+    [key: number]: boolean;
+};
+
+const toggleParameterVisibility = (filterId: number) => {
+    parameterVisibility[filterId] = !parameterVisibility[filterId];
+};
 
 </script>
 <template>
     <v-card class="d-flex  flex-fill flex-column ma-1">
         <v-card-title class="d-flex justify-space-between align-center">
-            <span>{{ showAccountFilters() ? `Filters assigned`  :  `Filters` }}</span>
+            <span>{{ showAccountFilters() ? `Filters assigned` : `Filters` }}</span>
             <v-btn v-if="account != null" icon="mdi-eye" size="x-small" variant="tonal" color="secondary"
                 @Click="changeToCleanView()"></v-btn>
         </v-card-title>
@@ -56,10 +69,9 @@ const changeToCleanView = (): void => {
         <v-progress-linear v-if="filterStore.isLoading" :indeterminate="filterStore.isLoading"></v-progress-linear>
         <v-card-item>
             <v-list>
-                <v-list-item class="mt-2 pa-2" v-for="filter in showAccountFilters() ? filterStore.account?.filters : filterStore.filters" 
-                :key="filter.id" 
-                :value="filter"
-                    border>
+                <v-list-item class="mt-2 pa-2"
+                    v-for="filter in showAccountFilters() ? filterStore.account?.filters : filterStore.filters"
+                    :key="filter.id" :value="filter" border>
                     <template v-slot:prepend>
                         <v-list-item-title class="text-h5 mr-3">
                             <v-chip class="chip-custom text-h6">{{ filter.reference }}</v-chip>
@@ -80,30 +92,32 @@ const changeToCleanView = (): void => {
                         <v-chip class="mx-1" :color="getColor(filter.active)" size="small"> {{ filter.active ? 'active' :
                             'inactive' }} </v-chip>
                     </v-list-item-subtitle>
-                    <parameter :filter="filter" ></parameter>
+                    <parameter v-if="parameterVisibility[filter.id]" class="mt-2"
+                        :show_parameters_assigned="parameterVisibility[filter.id]" :filter="filter"
+                        :account_id="account.id">
+                    </parameter>
                     <template v-slot:append>
-                        <div v-if="account == null" >
+                        <div v-if="account == null">
                             <filter-edit :filter="filter"></filter-edit>
-                        <v-btn icon="mdi-delete" size="small" variant="tonal" @Click="filterStore.deleteFilter(filter.id)"
-                            color="error"></v-btn>
+                            <v-btn icon="mdi-delete" size="small" variant="tonal"
+                                @Click="filterStore.deleteFilter(filter.id)" color="error"></v-btn>
                         </div>
                         <div v-else>
-                            <v-btn v-if="!showAccountFilters()" class="mx-2" icon="mdi-check-bold" size="small" variant="tonal"
-                                color="secondary"
+                            <v-btn v-if="!showAccountFilters()" class="mx-2" icon="mdi-check-bold" size="small"
+                                variant="tonal" color="secondary"
                                 @Click="filterStore.createAccountFilters(account.id, filter.id); showCleanView = true"></v-btn>
-                            <v-btn v-if="showAccountFilters()" class="mx-2" icon="mdi-close-thick" size="small" variant="tonal"
-                                color="secondary"
+                            <v-btn v-if="showAccountFilters()" class="mx-2" icon="mdi-close-thick" size="small"
+                                variant="tonal" color="secondary"
                                 @Click="filterStore.deleteAccountFilters(account.id, filter.id)"></v-btn>
-                            <v-btn v-if="showAccountFilters()" class="mx-2" icon="mdi-chevron-down" size="small" variant="tonal"
-                                color="secondary"
-                                @Click="filterStore.deleteAccountFilters(account.id, filter.id)"></v-btn>
+                            <v-btn v-if="showAccountFilters()" class="mx-2" icon="mdi-chevron-down" size="small"
+                                variant="tonal" color="secondary" @Click="toggleParameterVisibility(filter.id)"></v-btn>
                         </div>
                     </template>
                 </v-list-item>
             </v-list>
         </v-card-item>
         <v-card-actions class="d-flex justify-center">
-            <filter-create v-if="!showAccountFilters()" ></filter-create>
+            <filter-create v-if="!showAccountFilters()"></filter-create>
         </v-card-actions>
     </v-card>
 </template>
@@ -113,4 +127,5 @@ const changeToCleanView = (): void => {
     align-items: center;
     justify-content: center;
     width: 3rem;
-}</style>
+}
+</style>

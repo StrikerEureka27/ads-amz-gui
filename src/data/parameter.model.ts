@@ -17,7 +17,7 @@ export interface IFilterParameter {
     parameter: number;
 };
 
-export interface IAccountFiltersCreateDto extends Omit<IFilterParameter, 'id'> {};
+export interface IFilterParameterCreateDto extends Omit<IFilterParameter, 'id'> {};
 export interface IParameterCreateDto extends Omit<IParameter, 'id' | 'paramterType'> {};
 export interface IParameterUpdateDto extends Omit<IParameter, 'paramterType'> {};  
 

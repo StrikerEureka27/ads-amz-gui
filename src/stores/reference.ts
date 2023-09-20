@@ -172,6 +172,7 @@ export const useReferenceStore = defineStore('reference', () => {
                     'Content-Type': 'application/json',
                 }
             });
+            console.log(response);
             getAccountReferenceByAccountId(accountId);
         } catch (e) {
             console.error(e);

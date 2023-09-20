@@ -1,34 +1,48 @@
 <script setup lang="ts" >
 
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useReferenceStore } from '@/stores/reference';
-import ReferenceEdit from '@/components/ReferenceEdit.vue';
+import { useFormulaStore } from '@/stores/formula';
 import ReferenceCreate from '@/components/ReferenceCreate.vue';
 import type { IAccount } from '@/data/account.model';
 import router from '@/router';
+import type { IFormula } from '@/data/formula.model';
+import ReferenceEdit from '@/components/ReferenceEdit.vue';
 
-const props = defineProps(['account']);
+const props = defineProps(['account', 'formula']);
 const referenceStore = useReferenceStore();
+const formulaStore = useFormulaStore();
 const showCleanView = ref<boolean>(true);
 const account = ref<IAccount>(props.account);
+const formula = ref<IFormula>(props.formula);
 
 onMounted(() => {
     referenceStore.getReferencesTypes();
     changeView();
 });
 
+const isFormulaReference = (): boolean => {
+    return formula.value != null ? true : false;
+};
+
 const isAccountReference = (): boolean => {
-    return router.currentRoute.value.fullPath == '/home/reference' ? true : false;
-}
+    return router.currentRoute.value.fullPath != '/home/reference' ? true : false;
+};
 
 const showAccountReference = (): boolean => {
-    return showCleanView.value == true && isAccountReference() == false;
+    return showCleanView.value == true && isAccountReference() == true;
+};
+
+const showFormulaReference = (): boolean => {
+    return showCleanView.value == true && isFormulaReference() == true;
 };
 
 const changeView = (): void => {
-    if (showCleanView.value == true && isAccountReference() == false) {
+    if (showCleanView.value == true && isAccountReference() && !isFormulaReference()) {
         referenceStore.getAccountReferenceByAccountId(account.value.id);
         referenceStore.getAccountReferences(account.value.id);
+    } else if (showCleanView.value == true && isFormulaReference()) {
+        formulaStore.getFormulaReferences(formula.value.id);
     } else {
         referenceStore.getReferences();
     }
@@ -37,14 +51,14 @@ const changeView = (): void => {
 const changeToCleanView = (): void => {
     showCleanView.value = !showCleanView.value;
     changeView();
-}
+};
 
 </script>
 <template>
     <v-card class="d-flex  flex-fill flex-column ma-1">
         <v-card-title class="d-flex justify-space-between">
-            <span>{{ showAccountReference() ?  `References assigned`  :  `References` }}</span>
-            <v-btn v-if="account != null" icon="mdi-eye" size="x-small" variant="tonal" color="secondary"
+            <span>{{ showAccountReference() ? (showFormulaReference() ? 'Formula reference assigned' : 'References assigned') : `References` }}</span>
+            <v-btn v-if="account != null || formula != null" icon="mdi-eye" size="x-small" variant="tonal" color="secondary"
                 @Click="changeToCleanView()"></v-btn>
         </v-card-title>
         <v-divider></v-divider>
@@ -52,7 +66,7 @@ const changeToCleanView = (): void => {
         <v-card-item>
             <v-list>
                 <v-list-item class="mt-2 pa-2"
-                    v-for="reference in showAccountReference() ? referenceStore.account?.references : referenceStore.references"
+                    v-for="reference in  showAccountReference() ? (showFormulaReference() ? formula.references : referenceStore.account?.references) : referenceStore.references"
                     :key="reference.id" border>
                     <template v-slot:prepend>
                         <v-list-item-title class="text-h5 mr-3">
@@ -73,26 +87,32 @@ const changeToCleanView = (): void => {
                         <v-chip class="mx-1" color="info" size="small"> level: {{ reference.level }} </v-chip>
                     </v-list-item-subtitle>
                     <template v-slot:append>
-                        <div v-if="account == null">
+                        <div v-if="isAccountReference() && !isFormulaReference()">
+                            <v-btn v-if="!showCleanView"  class="mx-2" icon="mdi-check-bold" size="small"
+                                variant="tonal" color="secondary"
+                                @Click="referenceStore.createAccountReference(account.id, reference.id); showCleanView = true"></v-btn>
+                            <v-btn v-if="showCleanView" class="mx-2" icon="mdi-close-thick" size="small" variant="tonal" color="secondary"
+                                @Click="referenceStore.deleteAccountReferences(account.id, reference.id)"></v-btn>
+                        </div>
+                        <div v-else-if="isFormulaReference()">
+                            <v-btn v-if="!showCleanView" class="mx-2" icon="mdi-check-bold" size="small"
+                                variant="tonal" color="secondary"
+                                @Click="formulaStore.createFormulaReference(formula.id, reference.id); showCleanView = true"></v-btn>
+
+                            <v-btn v-if="showCleanView" class="mx-2" icon="mdi-close-thick" size="small" variant="tonal" color="secondary"
+                                @Click="formulaStore.deleteFormulaReference(formula.id, reference.id, account.id)"></v-btn>
+                        </div>
+                        <div v-else>
                             <reference-edit :reference="reference"></reference-edit>
                             <v-btn class="mx-2" icon="mdi-delete" size="small" variant="tonal"
                                 @Click="referenceStore.deleteReference(reference.id)" color="error"></v-btn>
-                        </div>
-                        <div v-else>
-                            <v-btn v-if="!showAccountReference()" class="mx-2" icon="mdi-check-bold" size="small" variant="tonal"
-                                color="secondary"
-                                @Click="referenceStore.createAccountReference(account.id, reference.id); showCleanView = true"></v-btn>
-                            <v-btn v-if="showAccountReference()" class="mx-2" icon="mdi-close-thick" size="small" variant="tonal"
-                                color="secondary"
-                                @Click="referenceStore.deleteAccountReferences(account.id, reference.id)"></v-btn>
                         </div>
                     </template>
                 </v-list-item>
             </v-list>
         </v-card-item>
         <v-card-actions class="d-flex justify-center">
-            <reference-create
-                v-if="!showAccountReference()"></reference-create>
+            <reference-create v-if="!showAccountReference()"></reference-create>
         </v-card-actions>
     </v-card>
 </template>
