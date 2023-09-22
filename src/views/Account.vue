@@ -20,8 +20,11 @@ const getColor =(flag: boolean) =>{
     return flag ? 'green' : 'red';
 };
 
-const navigation = (toPath: string):void =>{
-    router.push( { path: '/home/account' + toPath + '/1' } );
+const changeAccountSelected = (accountId: number) => {
+   accountStore.getAccountById(accountId);
+   setTimeout(()=> {
+    router.push({ name: 'Repository' });
+   },500);
 };
 
 </script>
@@ -51,7 +54,7 @@ const navigation = (toPath: string):void =>{
                     <template v-slot:append>
                         <account-configuration :account="account"></account-configuration>
                         <account-edit :account="account" ></account-edit>
-                        <v-btn icon="mdi-upload" size="small" variant="tonal" color="secondary"></v-btn>
+                        <v-btn icon="mdi-upload" size="small" variant="tonal" color="secondary" @Click="changeAccountSelected(account.id)" ></v-btn>
                     </template>
                 </v-list-item>
             </v-list>

@@ -35,7 +35,7 @@ reference = props.reference;
                 <form>
                     <v-text-field v-model="reference.name" label="Name" variant="solo-filled" density="compact" clearable
                         required></v-text-field>
-                    <v-text-field v-model="reference.header" label="Header" variant="solo-filled" density="compact"
+                    <v-text-field v-model="reference.header" label="Column index" variant="solo-filled" density="compact"
                         clearable required></v-text-field>
                     <v-text-field v-model="reference.value" label="Value" variant="solo-filled" density="compact" clearable
                         required></v-text-field>

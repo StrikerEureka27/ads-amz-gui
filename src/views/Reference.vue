@@ -1,6 +1,6 @@
 <script setup lang="ts" >
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useReferenceStore } from '@/stores/reference';
 import { useFormulaStore } from '@/stores/formula';
 import ReferenceCreate from '@/components/ReferenceCreate.vue';
@@ -18,6 +18,9 @@ const formula = ref<IFormula>(props.formula);
 
 onMounted(() => {
     referenceStore.getReferencesTypes();
+    watch(() => props.formula, (newFormula) => {
+        formula.value = newFormula;
+    }, { deep: true });
     changeView();
 });
 

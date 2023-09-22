@@ -80,8 +80,8 @@ export const useFilterStore = defineStore('filter', () => {
     };
 
     async function createFilter(data: IFilterCreateDto): Promise<void> {
-        console.log(data);
         try {
+            isLoading.value = true;
             let token = await getAccessTokenSilently();
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/filter/create`, {
                 method: 'POST',
@@ -91,8 +91,8 @@ export const useFilterStore = defineStore('filter', () => {
                 },
                 body: JSON.stringify(data)
             });
-            console.log(response);
             getFilters();
+            isLoading.value = false;
         } catch (e) {
             console.error(e);
         }
@@ -100,6 +100,7 @@ export const useFilterStore = defineStore('filter', () => {
 
     async function updateFilter(data: IFilterUpdateDto): Promise<void> {
         try {
+            isLoading.value = true;
             let token = await getAccessTokenSilently();
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/filter/update`, {
                 method: 'PUT',
@@ -109,7 +110,7 @@ export const useFilterStore = defineStore('filter', () => {
                 },
                 body: JSON.stringify(data)
             });
-            console.log(response);
+            isLoading.value = false;
             getFilters();
         } catch (e) {
             console.error(e);
@@ -118,6 +119,7 @@ export const useFilterStore = defineStore('filter', () => {
 
     async function deleteFilter(filterId: number): Promise<void> {
         try {
+            isLoading.value = true;
             let token = await getAccessTokenSilently();
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/filter/${filterId}/delete`, {
                 method: 'DELETE',
@@ -126,7 +128,7 @@ export const useFilterStore = defineStore('filter', () => {
                     'Content-Type': 'application/json',
                 }
             });
-            console.log(response);
+            isLoading.value = false;
             getFilters();
         } catch (e) {
             console.error(e);
@@ -169,7 +171,6 @@ export const useFilterStore = defineStore('filter', () => {
                     'Content-Type': 'application/json',
                 }
             });
-            console.log(response);
             getAccountFiltersByAccountId(accountId);
         } catch (e) {
             console.error(e);

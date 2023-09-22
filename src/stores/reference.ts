@@ -30,7 +30,6 @@ export const useReferenceStore = defineStore('reference', () => {
         } catch (e) {
             console.error(e);
         }
-
     };
 
     async function getAccountReferences(accountId: number): Promise<void> {
@@ -81,8 +80,8 @@ export const useReferenceStore = defineStore('reference', () => {
     };
 
     async function createReference(data: IReferenceCreateDto): Promise<void> {
-        console.log(data);
         try {
+            isloading.value = true;
             let token = await getAccessTokenSilently();
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/reference/create`, {
                 method: 'POST',
@@ -92,8 +91,8 @@ export const useReferenceStore = defineStore('reference', () => {
                 },
                 body: JSON.stringify(data)
             });
-            console.log(response);
             getReferences();
+            isloading.value = false;
         } catch (e) {
             console.error(e);
         }
@@ -125,6 +124,7 @@ export const useReferenceStore = defineStore('reference', () => {
 
     async function updateReference(data: IReferenceUpdateDto): Promise<void> {
         try {
+            isloading.value = true;
             let token = await getAccessTokenSilently();
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/reference/update`, {
                 method: 'PUT',
@@ -134,8 +134,8 @@ export const useReferenceStore = defineStore('reference', () => {
                 },
                 body: JSON.stringify(data)
             });
-            console.log(response);
             getReferences();
+            isloading.value = false;
         } catch (e) {
             console.error(e);
         }
@@ -143,6 +143,7 @@ export const useReferenceStore = defineStore('reference', () => {
 
     async function deleteReference(referenceId: number): Promise<void> {
         try {
+            isloading.value = true;
             let token = await getAccessTokenSilently();
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/reference/${referenceId}/delete`, {
                 method: 'DELETE',
@@ -151,8 +152,8 @@ export const useReferenceStore = defineStore('reference', () => {
                     'Content-Type': 'application/json',
                 }
             });
-            console.log(response);
             getReferences();
+            isloading.value = false;
         } catch (e) {
             console.error(e);
         }
@@ -172,7 +173,6 @@ export const useReferenceStore = defineStore('reference', () => {
                     'Content-Type': 'application/json',
                 }
             });
-            console.log(response);
             getAccountReferenceByAccountId(accountId);
         } catch (e) {
             console.error(e);

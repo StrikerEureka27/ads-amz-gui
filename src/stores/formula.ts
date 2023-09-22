@@ -64,6 +64,22 @@ export const useFormulaStore = defineStore('formula', () => {
         }
     };
 
+    async function getFormulaReferences(formulaId: number): Promise<void> {
+        try {
+            let token = await getAccessTokenSilently();
+            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/formula/${formulaId}/reference`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            formulaReference.value = await response.json();
+        } catch (e) {
+            console.error(e);
+        }
+
+    };
+
     async function createAccountFormula(accountId: number, formulaId: number): Promise<void> {
         try {
             accountFormulaCreate.value.push({
@@ -94,7 +110,7 @@ export const useFormulaStore = defineStore('formula', () => {
             });
 
             let token = await getAccessTokenSilently();
-            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/account/reference/create`, {
+            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/formula/reference/create`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -110,7 +126,6 @@ export const useFormulaStore = defineStore('formula', () => {
     };
 
     async function createFormula(data: IFormulaCreateDto): Promise<void> {
-        console.log(data);
         try {
             let token = await getAccessTokenSilently();
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/formula/create`, {
@@ -121,7 +136,6 @@ export const useFormulaStore = defineStore('formula', () => {
                 },
                 body: JSON.stringify(data)
             });
-            console.log(response);
             getFormulas();
         } catch (e) {
             console.error(e);
@@ -146,29 +160,21 @@ export const useFormulaStore = defineStore('formula', () => {
         } catch (e) {
             console.error(e);
         }
-
     };
 
-    async function getFormulaReferences(formulaId: number): Promise<void> {
-        try {
-            let token = await getAccessTokenSilently();
-            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/formula/${formulaId}/reference`, {
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            formulaReference.value = await response.json();
-        } catch (e) {
-            console.error(e);
-        }
-
+    const findIdToDelete = (accId: number, forId: number) => {
+        let accountFormulaRelationship = accountFormulas.value.find((e) => {
+            if (accId == e.account && forId == e.formula) {
+                return e.id;
+            }
+        });
+        return accountFormulaRelationship;
     };
 
     async function deleteFormulaReference(formulaId: number, referenceId: number ,accountId: number): Promise<void> {
         let idToDelete: (number | undefined) = 0;
         if (findFormulaReferenceIdToDelete(formulaId, referenceId) != null) {
-            idToDelete = findIdToDelete(formulaId, referenceId)?.id;
+            idToDelete = findFormulaReferenceIdToDelete(formulaId, referenceId)?.id;
         }
         try {
             let token = await getAccessTokenSilently();
@@ -179,7 +185,6 @@ export const useFormulaStore = defineStore('formula', () => {
                     'Content-Type': 'application/json',
                 }
             });
-            console.log(response);
             getAccountFormulasByAccountId(accountId);
         } catch (e) {
             console.error(e);
@@ -189,20 +194,11 @@ export const useFormulaStore = defineStore('formula', () => {
 
     const findFormulaReferenceIdToDelete = (formulaId: number, referenceId: number) => {
         let formulaReferenceRelationship = formulaReference.value.find((e) => {
-            if (formulaId == e.formula && referenceId == e.formula) {
+            if (formulaId == e.formula && referenceId == e.reference) {
                 return e.id;
             }
         });
         return formulaReferenceRelationship;
-    };
-
-    const findIdToDelete = (accId: number, forId: number) => {
-        let accountFormulaRelationship = accountFormulas.value.find((e) => {
-            if (accId == e.account && forId == e.formula) {
-                return e.id;
-            }
-        });
-        return accountFormulaRelationship;
     };
 
     async function updateFormula(data: IFormula): Promise<void> {
@@ -216,7 +212,6 @@ export const useFormulaStore = defineStore('formula', () => {
                 },
                 body: JSON.stringify(data)
             });
-            console.log(response);
             getFormulas();
         } catch (e) {
             console.error(e);
@@ -233,7 +228,6 @@ export const useFormulaStore = defineStore('formula', () => {
                     'Content-Type': 'application/json',
                 }
             });
-            console.log(response);
             getFormulas();
         } catch (e) {
             console.error(e);

@@ -1,13 +1,24 @@
 <script setup lang="ts" >
 
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useFileStore } from '@/stores/adsfile';
+import { useLogStore } from '@/stores/adslog';
+import { useAccountStore } from '@/stores/account';
 
 const fileStore = useFileStore();
+const logStore = useLogStore();
+const accountStore = useAccountStore();
+const showRepository = ref<boolean>(false);
 
 onMounted(() => {
+    logStore.getLogs();
     fileStore.getFiles();
+    isAccountSelected();
 });
+
+const isAccountSelected = () => {
+   accountStore.currentAccount!=null ? showRepository.value = true : showRepository.value = false;
+};
 
 const reloadStores = () => {
     fileStore.getFiles();
@@ -28,13 +39,13 @@ const parseDate = (createdAt: Date): string => {
             <v-divider></v-divider>
             <v-progress-linear v-if="fileStore.isLoadingLinear" :indeterminate="fileStore.isLoadingLinear"></v-progress-linear>
             <v-card-text>Manage and visualize current workflow</v-card-text>
-            <v-container>
+            <v-card-text>{{ showRepository ? `Account selected: ${accountStore.currentAccount?.name} ` : 'No account selected.' }}</v-card-text>
+            <v-container v-if="showRepository">
                 <v-list class="d-flex pa-0">
                     <v-list-item class="ma-2">
                         <v-list-item-subtitle class="mb-2">PROGRESS</v-list-item-subtitle>
-                        <v-progress-circular :rotate="360" :size="100" :width="15" :model-value="fileStore.load"
-                            :indeterminate="fileStore.isLoading" color="secondary">
-                            {{ fileStore.load + "%" }}
+                        <v-progress-circular :rotate="360" :size="100" :width="15" :indeterminate="fileStore.isLoading" color="secondary">
+                            {{ fileStore.isLoading ? 'Loading' : '' }}
                         </v-progress-circular>
                     </v-list-item>
                     <v-list-item>
@@ -55,15 +66,15 @@ const parseDate = (createdAt: Date): string => {
                 <v-divider class="mt-4"></v-divider>
                 <v-list>
                     <v-list-subheader>READY TO PROCESS</v-list-subheader>
-                    <v-list-item v-for="f in fileStore.getNotProcessedFiles()" :key="f.id" :value="f">
+                    <v-list-item v-for="f in fileStore.getNotProcessedFiles(accountStore.currentAccount?.id)" :key="f.id" :value="f">
                         <template v-slot:prepend>
                             <v-icon icon="mdi-file"></v-icon>
                         </template>
-                        <v-list-item-title> <v-chip variant="tonal" size="x-small">{{ f.id }}</v-chip> {{ f.name
-                        }}</v-list-item-title>
+                        <v-list-item-title> <v-chip variant="tonal" size="x-small">{{ f.id }}</v-chip> {{ f.name }}</v-list-item-title>
                         <v-list-item-subtitle> {{ parseDate(f.createdAt) }} </v-list-item-subtitle>
                         <v-list-item-subtitle> {{ f.step == 0 ? `Ready to process` : `Not ready to process or refresh
                             repository` }} </v-list-item-subtitle>
+                        <v-list-item-subtitle> Account: {{ f.accountId }} </v-list-item-subtitle>
                         <template v-slot:append>
                             <v-btn class="mr-2" icon="mdi-delete" size="small" variant="tonal" color="error"
                                 @click="fileStore.deleteFile(f.id)"></v-btn>
@@ -76,7 +87,7 @@ const parseDate = (createdAt: Date): string => {
                 <v-divider></v-divider>
                 <v-list>
                     <v-list-subheader>PROCESSED</v-list-subheader>
-                    <v-list-item min-width="300" v-for="f in fileStore.getFilesProcessedWithDownloadLink()" :key="f.id"
+                    <v-list-item min-width="300" v-for="f in fileStore.getFilesProcessedWithDownloadLink(accountStore.currentAccount?.id)" :key="f.id"
                         :value="f">
                         <template v-slot:prepend>
                             <v-icon icon="mdi-file-document-check"></v-icon>

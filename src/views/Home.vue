@@ -21,5 +21,10 @@ const {  isAuthenticated } = useAuth0();
         <router-view></router-view>
         <history></history>
     </v-container>
+    <v-container v-else class="d-flex justify-center flex-wrap" fluid >
+        <v-progress-circular color="secondary" indeterminate :size="128" :width="12">
+            <span class="text-subtitle-1">Loading</span>
+            </v-progress-circular>
+    </v-container>
 </template>
 <style scoped></style>

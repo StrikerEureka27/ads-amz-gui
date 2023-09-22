@@ -41,7 +41,7 @@ const levels = ref<number[]>([1, 2]);
                     <div class="d-flex justify-space-between">
                         <v-text-field v-model="filter.header" class="mr-2" label="Header" variant="solo-filled"
                             density="compact" clearable required></v-text-field>
-                        <v-text-field v-model="filter.reference" label="Reference" variant="solo-filled" density="compact"
+                        <v-text-field v-model="filter.reference" label="Column index" variant="solo-filled" density="compact"
                             clearable required></v-text-field>
                     </div>
                     <v-select v-model="filter.type" :items="filterStore.filtersTypes" item-title="name" item-value="id" label="Type" variant="solo-filled" density="compact"

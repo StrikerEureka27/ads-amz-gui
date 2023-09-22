@@ -36,7 +36,7 @@ const levels = ref<number[]>([1, 2]);
                 <form>
                     <v-text-field v-model="formula.name" label="Name" variant="solo-filled" density="compact" clearable
                         required></v-text-field>
-                    <v-text-field v-model="formula.header" class="mr-2" label="Header" variant="solo-filled"
+                    <v-text-field v-model="formula.header" class="mr-2" label="Header name" variant="solo-filled"
                         density="compact" clearable required></v-text-field>
                     <v-text-field v-model="formula.pattern" label="Pattern" variant="solo-filled" density="compact"
                         clearable required></v-text-field>

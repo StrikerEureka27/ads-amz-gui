@@ -41,7 +41,7 @@ const navigation = (navigationPath: string): void => {
         <template v-slot:activator="{ props }">
             <v-btn class="mr-2" icon="mdi-cog" size="small" variant="tonal" color="info" @click="dialog = true"></v-btn>
         </template>
-        <v-card min-width="500">
+        <v-card width="auto" >
             <v-card-title class="d-flex justify-space-between">
                 <span>Configuration</span>
                 <v-btn color="error" variant="text" icon="mdi-close-thick" size="x-small" @click="dialog = false"></v-btn>

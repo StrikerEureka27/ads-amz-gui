@@ -29,7 +29,7 @@ const levels = ref<number[]>([1, 2]);
             <v-card-item>
                 <form>
                     <v-text-field v-model="formula.name" label="Name" variant="solo-filled" density="compact" clearable required></v-text-field>
-                    <v-text-field v-model="formula.header" label="Header" variant="solo-filled" density="compact"  clearable required></v-text-field>
+                    <v-text-field v-model="formula.header" label="Header name" variant="solo-filled" density="compact"  clearable required></v-text-field>
                     <v-text-field v-model="formula.pattern" label="Pattern" variant="solo-filled" density="compact"  clearable required></v-text-field>
                     <v-select v-model="formula.level" :items="levels" label="Level" variant="solo-filled" density="compact" required></v-select>
                 </form>

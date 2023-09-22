@@ -3,7 +3,6 @@ import { defineStore } from 'pinia';
 import { useAuth0 } from '@auth0/auth0-vue';
 import type { IParameter, IParameterType, IParameterCreateDto, IParameterUpdateDto, IFilterParameter, IFilterParameterCreateDto } from '@/data/parameter.model';
 import { useFilterStore } from '@/stores/filter';
-import { useAccountStore } from '@/stores/account';
 
 export const useParameterStore = defineStore('parameter', () => {
     const { getAccessTokenSilently } = useAuth0();
@@ -12,7 +11,6 @@ export const useParameterStore = defineStore('parameter', () => {
     const filterParameters = ref<IFilterParameter[]>([]);
     const filterParametersCreate = ref<IFilterParameterCreateDto[]>([]);
     const parameterTypes = ref<IParameterType[]>([]);
-    const accountStore = useAccountStore();
 
     async function getParameters(): Promise<void> {
         try {
@@ -46,7 +44,6 @@ export const useParameterStore = defineStore('parameter', () => {
     };
 
     async function createParameter(data: IParameterCreateDto): Promise<void> {
-        console.log(data);
         try {
             let token = await getAccessTokenSilently();
             const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/parameter/create`, {
@@ -57,7 +54,6 @@ export const useParameterStore = defineStore('parameter', () => {
                 },
                 body: JSON.stringify(data)
             });
-            console.log(response);
             getParameters();
         } catch (e) {
             console.error(e);
@@ -115,7 +111,6 @@ export const useParameterStore = defineStore('parameter', () => {
                 },
                 body: JSON.stringify(data)
             });
-            console.log(response);
             getParameters();
         } catch (e) {
             console.error(e);
@@ -132,7 +127,6 @@ export const useParameterStore = defineStore('parameter', () => {
                     'Content-Type': 'application/json',
                 }
             });
-            console.log(response);
             getParameters();
         } catch (e) {
             console.error(e);

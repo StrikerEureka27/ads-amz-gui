@@ -12,7 +12,7 @@ export const useFileStore = defineStore('file', () => {
     const logStore = useLogStore();
     const isLoadingLinear = ref<boolean>();
 
-    
+
     async function getFiles(): Promise<void> {
         try {
             isLoadingLinear.value = true;
@@ -20,7 +20,7 @@ export const useFileStore = defineStore('file', () => {
             const res = await fetch(`https://${import.meta.env.VITE_AMZ_API}/file/all`, {
                 method: 'GET',
                 headers: {
-                     Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                 }
             });
             files.value = await res.json();
@@ -33,39 +33,41 @@ export const useFileStore = defineStore('file', () => {
 
     const uploadStep = async (id: number): Promise<void> => {
         try {
-            load.value = 25;
+            isLoading.value = true;
             let token: string = await getAccessTokenSilently();
-            await fetch(`https://${import.meta.env.VITE_AMZ_API}/step/${id}`, {
+            let response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/file/step/${id}/update`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }
             });
-            let index = 0;
-            const refreshIntervalId = setInterval(() => {
-                index++;
-                load.value += 25;
-                if (index == 3) {
-                    clearInterval(refreshIntervalId);
-                    getFiles();
-                    logStore.getLogs();
-                    load.value = 0;
-                }
-            }, 1000);
-
+            if (response.ok) {
+                getFiles();
+                changeLoading(false);
+                logStore.getLogs();
+            } else {
+                console.error('Server response not successful:', response.statusText);
+            }
         } catch (e) {
-            isLoading.value = false;
             console.error(e);
         }
+
+        finally {
+            isLoading.value = false;
+        }
     };
+
+    async function changeLoading(value: boolean): Promise<void> {
+        isLoading.value = value;
+    }
 
     async function deleteFile(id: number): Promise<void> {
         try {
             let token: string = await getAccessTokenSilently();
             isLoading.value = true;
-            await fetch(`https://${import.meta.env.VITE_AMZ_API}/delete/${id}`, {
-                method: 'POST',
+            await fetch(`https://${import.meta.env.VITE_AMZ_API}/file/${id}/delete`, {
+                method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -85,7 +87,7 @@ export const useFileStore = defineStore('file', () => {
     async function downloadFile(id: number): Promise<string | undefined> {
         try {
             let token: string = await getAccessTokenSilently();
-            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/download/${id}`, {
+            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/file/${id}/download`, {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -99,20 +101,20 @@ export const useFileStore = defineStore('file', () => {
         }
     };
 
-    function getFilesProcessedWithDownloadLink(): IFile[] {
-        const copyFiles = [...getProcessedFiles()];
+    function getFilesProcessedWithDownloadLink(accountId: number): IFile[] {
+        const copyFiles = [...getProcessedFiles(accountId)];
         copyFiles.forEach(async (e) => {
             e.path = await downloadFile(e.id);
         });
         return copyFiles;
     }
 
-    const getProcessedFiles = (): IFile[] => {
-        return files.value.filter((e) => e.processed == true);
+    const getProcessedFiles = (accountId: number): IFile[] => {
+        return files.value.filter((e) => e.processed == true && e.accountId == accountId);
     }
 
-    const getNotProcessedFiles = (): IFile[] => {
-        return files.value.filter((e) => e.processed == false);
+    const getNotProcessedFiles = (accountId: number): IFile[] => {
+        return files.value.filter((e) => e.processed == false && e.accountId == accountId);
     }
 
     const getTotalFiles = (): number => {

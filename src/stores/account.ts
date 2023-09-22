@@ -10,6 +10,7 @@ export const useAccountStore = defineStore('account', () => {
     const isLoading = ref<boolean>(false);
     const account = ref<IAccount>();
     const showAccountCreateModal = ref<boolean>(false);
+    const currentAccount = ref<IAccount>();
 
     async function getAccounts(): Promise<void> {
         try {
@@ -27,6 +28,23 @@ export const useAccountStore = defineStore('account', () => {
             console.error(e);
         }
 
+    };
+
+    async function getAccountById(accountId: number): Promise<void> {
+        try {
+            isLoading.value = true;
+            let token = await getAccessTokenSilently();
+            const response = await fetch(`https://${import.meta.env.VITE_AMZ_API}/account/${accountId}`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            currentAccount.value = await response.json();
+            isLoading.value = false;
+        } catch (e) {
+            console.error(e);
+        }
     };
 
     async function createAccount(data: IAccountCreateDto): Promise<void> {
@@ -67,5 +85,15 @@ export const useAccountStore = defineStore('account', () => {
         }
     };
 
-    return { account, accounts, getAccounts, createAccount, updateAccount, showAccountCreateModal, isLoading }
+    return {
+        account,
+        accounts,
+        showAccountCreateModal,
+        isLoading,
+        currentAccount,
+        getAccounts,
+        createAccount,
+        updateAccount,
+        getAccountById
+    }
 });
